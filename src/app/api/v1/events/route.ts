@@ -1,0 +1,103 @@
+import { NextResponse } from "next/server";
+import { extractBearerToken, findProjectByApiKey } from "@/lib/apiKey";
+import { resolveCorsHeaders } from "@/lib/cors";
+import { EVENT_RATE_LIMIT_MAX, EVENT_RATE_LIMIT_WINDOW_MS, MAX_EVENT_PAYLOAD_BYTES } from "@/lib/constants";
+import { ApiError, ERRORS, jsonError } from "@/lib/errors";
+import { capturedEventSchema, normalizeEvent } from "@/lib/eventSchema";
+import { notifyIfNeeded } from "@/lib/notify";
+import { persistEvent } from "@/lib/persistEvent";
+import { checkRateLimit } from "@/lib/rateLimit";
+
+export async function OPTIONS(request: Request): Promise<NextResponse> {
+  const cors = resolveCorsHeaders(request.headers.get("origin"));
+  return new NextResponse(null, { status: 204, headers: cors });
+}
+
+export async function POST(request: Request): Promise<NextResponse> {
+  const cors = resolveCorsHeaders(request.headers.get("origin"));
+
+  try {
+    const rawKey = extractBearerToken(request.headers.get("authorization"));
+    if (!rawKey) {
+      return jsonError(ERRORS.UNAUTHORIZED(), cors);
+    }
+
+    const rawBody = await request.text();
+    if (Buffer.byteLength(rawBody, "utf8") > MAX_EVENT_PAYLOAD_BYTES) {
+      return jsonError(ERRORS.PAYLOAD_TOO_LARGE(), cors);
+    }
+
+    let parsedBody: unknown;
+    try {
+      parsedBody = JSON.parse(rawBody);
+    } catch {
+      return jsonError(ERRORS.invalidEvent("Request body must be valid JSON."), cors);
+    }
+
+    const result = capturedEventSchema.safeParse(parsedBody);
+    if (!result.success) {
+      const firstIssue = result.error.issues[0];
+      const message = firstIssue ? `${firstIssue.path.join(".") || "(root)"}: ${firstIssue.message}` : "Invalid event.";
+      return jsonError(ERRORS.invalidEvent(message), cors);
+    }
+
+    const event = normalizeEvent(result.data);
+
+    const project = await findProjectByApiKey(rawKey);
+    if (!project) {
+      return jsonError(ERRORS.INVALID_API_KEY(), cors);
+    }
+
+    // Keyed by project id — only a request with a real, already-validated
+    // API key consumes a bucket, so this can't be used to grow the
+    // in-memory rate-limit store with arbitrary garbage keys.
+    const rateLimit = checkRateLimit(`events:${project.id}`, EVENT_RATE_LIMIT_MAX, EVENT_RATE_LIMIT_WINDOW_MS);
+    if (!rateLimit.allowed) {
+      return jsonError(ERRORS.RATE_LIMITED(Math.ceil(rateLimit.retryAfterMs / 1000)), cors);
+    }
+
+    const persisted = await persistEvent(project.id, event);
+
+    // Deliberately excludes message/stack/url to avoid dumping arbitrary
+    // user-supplied content into server logs.
+    console.log("event persisted", {
+      projectId: project.id,
+      groupId: persisted.groupId,
+      eventId: persisted.eventId,
+      occurrenceCount: persisted.occurrenceCount,
+      type: event.type,
+    });
+
+    // Best-effort: a notification failure must never fail this request —
+    // the event is already durably persisted above.
+    try {
+      await notifyIfNeeded(project, event, persisted);
+    } catch (notifyError) {
+      console.error("notifyIfNeeded failed (event already persisted)", notifyError);
+    }
+
+    return NextResponse.json({ success: true, eventId: `evt_${event.id}` }, { status: 200, headers: cors });
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return jsonError(error, cors);
+    }
+    console.error("unexpected error handling POST /api/v1/events", error);
+    return jsonError(ERRORS.INTERNAL_ERROR(), cors);
+  }
+}
+
+export async function GET(request: Request): Promise<NextResponse> {
+  return jsonError(ERRORS.METHOD_NOT_ALLOWED(), resolveCorsHeaders(request.headers.get("origin")));
+}
+
+export async function PUT(request: Request): Promise<NextResponse> {
+  return jsonError(ERRORS.METHOD_NOT_ALLOWED(), resolveCorsHeaders(request.headers.get("origin")));
+}
+
+export async function DELETE(request: Request): Promise<NextResponse> {
+  return jsonError(ERRORS.METHOD_NOT_ALLOWED(), resolveCorsHeaders(request.headers.get("origin")));
+}
+
+export async function PATCH(request: Request): Promise<NextResponse> {
+  return jsonError(ERRORS.METHOD_NOT_ALLOWED(), resolveCorsHeaders(request.headers.get("origin")));
+}
