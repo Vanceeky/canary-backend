@@ -7,7 +7,8 @@ web dashboard, and a mobile app against the same contract.
 This repo is a snapshot of the `backend/` workspace from the original
 `mini-sentry` monorepo, split out for a standalone Vercel deployment. It
 does not share git history with that repo — see `docs/API.md` for the full
-REST contract.
+REST contract, also published as a browsable reference at
+[Mini Sentry API](https://claude.ai/code/artifact/fd8174ef-304d-46b4-a980-94710544565a).
 
 ## Requirements
 
@@ -78,4 +79,5 @@ See `.env.example` for the full annotated list.
 ## Full API reference
 
 See [`docs/API.md`](./docs/API.md) for every endpoint's request/response
-shape, auth requirements, and error codes.
+shape, auth requirements, and error codes — or browse the same content as a
+searchable page: [Mini Sentry API](https://claude.ai/code/artifact/fd8174ef-304d-46b4-a980-94710544565a).
