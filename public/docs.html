@@ -1,0 +1,2602 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canary API</title>
+<meta name="description" content="Complete REST reference for the Canary error-monitoring backend — authentication, projects, event ingestion, error queries, teams, invitations, assignment, admin, and notifications.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    --ground: #f4f6f4;
+    --surface: #ffffff;
+    --surface-2: #eef1ef;
+    --ink: #10171a;
+    --ink-soft: #46545a;
+    --ink-faint: #7c8a8f;
+    --line: #dde3e0;
+    --line-soft: #e7ebe8;
+
+    --accent: #1b6b6f;
+    --accent-ink: #0f4d50;
+    --accent-tint: #e2f0ef;
+    --accent-tint-line: #bcdbd9;
+
+    --session: #3d5a99;
+    --session-tint: #e6ebf6;
+    --session-tint-line: #c2cfe8;
+
+    --get: #1b6b6f;
+    --get-tint: #e2f0ef;
+    --post: #3d5a99;
+    --post-tint: #e6ebf6;
+    --patch: #8a5a12;
+    --patch-tint: #f3e9d8;
+    --delete: #a23b3b;
+    --delete-tint: #f5e2e0;
+    --put: #6a4c8f;
+    --put-tint: #ede7f3;
+
+    --ok: #237a4f;
+    --ok-tint: #e1f0e7;
+    --warn: #a3690e;
+    --warn-tint: #f4ead4;
+    --bad: #b23a2c;
+    --bad-tint: #f6e1de;
+
+    --code-bg: #10171a;
+    --code-ink: #e7ede9;
+    --code-line: #263136;
+    --jkey: #7fd0c9;
+    --jstr: #d9b26a;
+    --jnum: #8fb8e0;
+    --jkw: #c68fd8;
+    --jpunct: #8b9a9d;
+
+    --shadow: 0 1px 2px rgba(16, 23, 26, 0.04), 0 6px 20px -8px rgba(16, 23, 26, 0.12);
+    --radius: 10px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0e1416;
+      --surface: #141c1f;
+      --surface-2: #182124;
+      --ink: #e9eeec;
+      --ink-soft: #aab8b8;
+      --ink-faint: #74868a;
+      --line: #263133;
+      --line-soft: #1d282a;
+
+      --accent: #4fb3ac;
+      --accent-ink: #8fd4cd;
+      --accent-tint: #16302f;
+      --accent-tint-line: #26504c;
+
+      --session: #7f9adb;
+      --session-tint: #1a2540;
+      --session-tint-line: #33477a;
+
+      --get: #4fb3ac;
+      --get-tint: #16302f;
+      --post: #7f9adb;
+      --post-tint: #1a2540;
+      --patch: #d9a44e;
+      --patch-tint: #362a12;
+      --delete: #dd8b82;
+      --delete-tint: #3a1e1c;
+      --put: #b79bd9;
+      --put-tint: #241a33;
+
+      --ok: #5ec98f;
+      --ok-tint: #0f2b1d;
+      --warn: #e0ac57;
+      --warn-tint: #33260e;
+      --bad: #e28579;
+      --bad-tint: #391d19;
+
+      --code-bg: #0b1113;
+      --code-ink: #dce6e2;
+      --code-line: #1e2a2c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0e1416;
+    --surface: #141c1f;
+    --surface-2: #182124;
+    --ink: #e9eeec;
+    --ink-soft: #aab8b8;
+    --ink-faint: #74868a;
+    --line: #263133;
+    --line-soft: #1d282a;
+
+    --accent: #4fb3ac;
+    --accent-ink: #8fd4cd;
+    --accent-tint: #16302f;
+    --accent-tint-line: #26504c;
+
+    --session: #7f9adb;
+    --session-tint: #1a2540;
+    --session-tint-line: #33477a;
+
+    --get: #4fb3ac;
+    --get-tint: #16302f;
+    --post: #7f9adb;
+    --post-tint: #1a2540;
+    --patch: #d9a44e;
+    --patch-tint: #362a12;
+    --delete: #dd8b82;
+    --delete-tint: #3a1e1c;
+    --put: #b79bd9;
+    --put-tint: #241a33;
+
+    --ok: #5ec98f;
+    --ok-tint: #0f2b1d;
+    --warn: #e0ac57;
+    --warn-tint: #33260e;
+    --bad: #e28579;
+    --bad-tint: #391d19;
+
+    --code-bg: #0b1113;
+    --code-ink: #dce6e2;
+    --code-line: #1e2a2c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ============ BASE ============ */
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 { font-weight: 600; text-wrap: balance; margin: 0; }
+  p { margin: 0 0 0.9em; max-width: 66ch; }
+  code, pre, kbd { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace; }
+  a { color: var(--accent-ink); }
+  ::selection { background: var(--accent-tint-line); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Sans Condensed", "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ============ SHELL / LAYOUT ============ */
+  .shell {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    min-height: 100vh;
+  }
+  .scrim { display: none; }
+  .topbar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .topbar-brand { display: flex; align-items: baseline; gap: 0.5rem; }
+  .topbar-brand strong { font-size: 1rem; }
+  .menu-btn {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--line);
+    background: var(--surface);
+    padding: 1.4rem 1.1rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  .brand { display: flex; flex-direction: column; gap: 0.3rem; }
+  .brand-mark { display: flex; align-items: center; gap: 0.55rem; }
+  .brand-glyph {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--accent-tint); border: 1px solid var(--accent-tint-line);
+    display: grid; place-items: center; flex: none;
+  }
+  .brand-glyph svg { width: 16px; height: 16px; }
+  .brand-mark strong { font-size: 1.06rem; letter-spacing: -0.01em; }
+  .brand-sub { color: var(--ink-faint); font-size: 0.82rem; }
+  .brand-meta {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--ink-soft);
+  }
+  .brand-meta span {
+    background: var(--surface-2); border: 1px solid var(--line-soft);
+    border-radius: 5px; padding: 0.12rem 0.42rem;
+  }
+
+  .nav-search { position: relative; }
+  .nav-search input {
+    width: 100%; font: inherit; font-size: 0.85rem;
+    padding: 0.5rem 0.65rem 0.5rem 1.95rem;
+    border-radius: 8px; border: 1px solid var(--line);
+    background: var(--surface-2); color: var(--ink);
+  }
+  .nav-search input::placeholder { color: var(--ink-faint); }
+  .nav-search svg {
+    position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; color: var(--ink-faint); pointer-events: none;
+  }
+
+  nav.toc { flex: 1; overflow-y: auto; }
+  .nav-group { margin-bottom: 1.05rem; }
+  .nav-group-title {
+    font-family: "IBM Plex Sans Condensed", sans-serif;
+    font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-faint); padding: 0 0.4rem; margin-bottom: 0.35rem;
+  }
+  .nav-group ul { list-style: none; margin: 0; padding: 0; }
+  .nav-link {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.32rem 0.4rem; border-radius: 7px;
+    font-size: 0.86rem; color: var(--ink-soft); text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  .nav-link:hover { background: var(--surface-2); color: var(--ink); }
+  .nav-link.active { background: var(--accent-tint); color: var(--accent-ink); border-left-color: var(--accent); font-weight: 500; }
+  .nav-link .m {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.62rem; font-weight: 600;
+    padding: 0.04rem 0.32rem; border-radius: 4px; letter-spacing: 0.02em; flex: none;
+  }
+  .nav-link .m.get { color: var(--get); background: var(--get-tint); }
+  .nav-link .m.post { color: var(--post); background: var(--post-tint); }
+  .nav-link .m.patch { color: var(--patch); background: var(--patch-tint); }
+  .nav-link .m.delete { color: var(--delete); background: var(--delete-tint); }
+  .nav-link .m.put { color: var(--put); background: var(--put-tint); }
+  .nav-link .path-frag { font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav-empty { font-size: 0.8rem; color: var(--ink-faint); padding: 0.4rem; display: none; }
+
+  .content {
+    padding: 3.4rem clamp(1.2rem, 4vw, 4rem) 6rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ============ HEADER / OVERVIEW ============ */
+  .masthead { margin-bottom: 2.6rem; }
+  .masthead h1 { font-size: clamp(1.9rem, 3vw, 2.5rem); letter-spacing: -0.015em; margin-bottom: 0.55rem; }
+  .masthead .lede { font-size: 1.03rem; color: var(--ink-soft); max-width: 62ch; margin-bottom: 1.1rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 0.7rem; align-items: center; }
+  .meta-pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; color: var(--ink-soft);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.28rem 0.75rem;
+  }
+  .meta-pill b { color: var(--ink); font-weight: 600; }
+
+  .flow {
+    margin-top: 2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.6rem;
+  }
+  .flow-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 1.1rem; }
+  .flow-row {
+    display: flex; align-items: stretch; gap: 0.4rem; flex-wrap: wrap;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.78rem;
+  }
+  .flow-node {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 0.5rem 0.75rem; color: var(--ink-soft);
+  }
+  .flow-node.accent { background: var(--accent-tint); border-color: var(--accent-tint-line); color: var(--accent-ink); font-weight: 500; }
+  .flow-node.session { background: var(--session-tint); border-color: var(--session-tint-line); color: var(--session); font-weight: 500; }
+  .flow-arrow { display: flex; align-items: center; color: var(--ink-faint); font-size: 0.85rem; padding: 0 0.1rem; }
+  .flow-row + .flow-row { margin-top: 0.6rem; }
+
+  /* ============ SECTIONS ============ */
+  section.cat { margin-top: 3.6rem; scroll-margin-top: 1.5rem; padding-top: 0.2rem; }
+  .cat-head { margin-bottom: 1.1rem; border-bottom: 1px solid var(--line); padding-bottom: 0.9rem; }
+  .cat-head h2 { font-size: 1.5rem; letter-spacing: -0.01em; }
+  .cat-head .cat-desc { color: var(--ink-soft); margin-top: 0.45rem; font-size: 0.95rem; }
+
+  .callout {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 0.85rem 1rem; margin: 1rem 0 1.6rem;
+    font-size: 0.9rem; color: var(--ink-soft);
+  }
+  .callout svg { flex: none; width: 16px; height: 16px; margin-top: 0.18rem; color: var(--accent); }
+  .callout strong { color: var(--ink); }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.warn svg { color: var(--warn); }
+
+  /* ============ ENDPOINT CARD ============ */
+  article.endpoint {
+    scroll-margin-top: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.6rem 1.7rem;
+    margin-bottom: 1.6rem;
+  }
+  .endpoint-head { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .method {
+    font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 0.76rem;
+    letter-spacing: 0.03em; border-radius: 6px; padding: 0.28rem 0.55rem; flex: none;
+  }
+  .method-get { color: var(--get); background: var(--get-tint); }
+  .method-post { color: var(--post); background: var(--post-tint); }
+  .method-patch { color: var(--patch); background: var(--patch-tint); }
+  .method-delete { color: var(--delete); background: var(--delete-tint); }
+  .method-put { color: var(--put); background: var(--put-tint); }
+  .endpoint-head .path { font-size: 0.98rem; font-weight: 500; overflow-wrap: anywhere; }
+  .auth-badge {
+    margin-left: auto; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+    border-radius: 999px; padding: 0.22rem 0.6rem; white-space: nowrap;
+  }
+  .auth-key { color: var(--accent-ink); background: var(--accent-tint); border: 1px solid var(--accent-tint-line); }
+  .auth-session { color: var(--session); background: var(--session-tint); border: 1px solid var(--session-tint-line); }
+  .auth-public { color: var(--ink-faint); background: var(--surface-2); border: 1px solid var(--line); }
+
+  .endpoint-desc { color: var(--ink-soft); font-size: 0.94rem; margin-bottom: 1.1rem; }
+  .endpoint-desc code { font-size: 0.87em; }
+
+  .endpoint-grid { display: grid; gap: 1.3rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 1.1rem; }
+  .block-label {
+    font-family: "IBM Plex Sans Condensed", sans-serif; font-weight: 600;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint);
+    display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.55rem;
+  }
+
+  table.fields { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  table.fields th {
+    text-align: left; font-family: "IBM Plex Sans Condensed", sans-serif; font-weight: 600;
+    font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 0 0.5rem 0.4rem 0; border-bottom: 1px solid var(--line);
+  }
+  table.fields td { padding: 0.42rem 0.5rem 0.42rem 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; color: var(--ink-soft); }
+  table.fields tr:last-child td { border-bottom: none; }
+  table.fields td:first-child { color: var(--ink); white-space: nowrap; }
+  table.fields code { font-size: 0.86em; }
+  .req-yes { color: var(--ok); font-weight: 600; font-size: 0.8em; }
+  .req-no { color: var(--ink-faint); font-size: 0.8em; }
+
+  .code-block { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--code-line); }
+  .code-block-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--code-line); padding: 0.4rem 0.7rem;
+  }
+  .code-block-bar span { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--code-ink); opacity: 0.65; }
+  .copy-btn {
+    font: inherit; font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--code-ink); opacity: 0.8;
+    background: transparent; border: 1px solid rgba(255,255,255,0.18); border-radius: 5px;
+    padding: 0.16rem 0.5rem; cursor: pointer;
+  }
+  .copy-btn:hover { opacity: 1; background: rgba(255,255,255,0.06); }
+  .copy-btn.copied { color: var(--get); border-color: currentColor; opacity: 1; }
+  pre.code {
+    margin: 0; padding: 0.85rem 1rem; background: var(--code-bg); color: var(--code-ink);
+    overflow-x: auto; font-size: 0.83rem; line-height: 1.6;
+  }
+  pre.code code { font-family: inherit; }
+  .jkey { color: var(--jkey); }
+  .jstr { color: var(--jstr); }
+  .jnum { color: var(--jnum); }
+  .jkw { color: var(--jkw); }
+  .cmt { color: #7c8a8f; font-style: italic; }
+
+  .status-chip {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; font-weight: 600;
+    border-radius: 5px; padding: 0.1rem 0.4rem; margin-left: 0.4rem;
+  }
+  .status-2xx { color: var(--ok); background: var(--ok-tint); }
+
+  .endpoint-foot { margin-top: 0.3rem; }
+  .error-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .error-chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; color: var(--ink-soft);
+    background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 6px;
+    padding: 0.24rem 0.55rem;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .dot-2xx { background: var(--ok); }
+  .dot-4xx { background: var(--warn); }
+  .dot-5xx { background: var(--bad); }
+
+  details.curl { margin-top: 1.15rem; }
+  details.curl summary {
+    cursor: pointer; font-size: 0.82rem; font-weight: 500; color: var(--ink-soft);
+    display: flex; align-items: center; gap: 0.4rem; user-select: none; list-style: none;
+  }
+  details.curl summary::-webkit-details-marker { display: none; }
+  details.curl summary .chev { transition: transform 0.15s ease; width: 11px; height: 11px; }
+  details.curl[open] summary .chev { transform: rotate(90deg); }
+  details.curl summary:hover { color: var(--ink); }
+  details.curl .code-block { margin-top: 0.65rem; }
+
+  .note { font-size: 0.88rem; color: var(--ink-faint); margin-top: 1.1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+  .note strong { color: var(--ink-soft); }
+
+  /* ============ CROSS-CUTTING BLOCKS ============ */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 1rem; }
+  .ref-table th {
+    text-align: left; font-family: "IBM Plex Sans Condensed", sans-serif; font-weight: 600;
+    font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 0 0.6rem 0.5rem 0; border-bottom: 1px solid var(--line);
+  }
+  .ref-table td { padding: 0.55rem 0.6rem 0.55rem 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; color: var(--ink-soft); }
+  .ref-table code { font-size: 0.9em; }
+  .status-num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .status-num.n4 { color: var(--warn); }
+  .status-num.n5 { color: var(--bad); }
+  .status-num.n2 { color: var(--ok); }
+  .status-num.n1 { color: var(--ink-faint); }
+
+  ul.limits { padding-left: 1.15rem; font-size: 0.92rem; color: var(--ink-soft); }
+  ul.limits li { margin-bottom: 0.55rem; }
+  ul.limits strong { color: var(--ink); }
+
+  .trigger-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line-soft); }
+  .trigger-row:last-child { border-bottom: none; }
+  .trigger-rank {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; font-weight: 600; color: var(--ink-faint);
+    width: 1.6rem; flex: none;
+  }
+  .trigger-name {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; font-weight: 600; color: var(--accent-ink);
+    background: var(--accent-tint); border-radius: 5px; padding: 0.15rem 0.45rem; flex: none;
+  }
+  .trigger-cond { color: var(--ink-soft); font-size: 0.88rem; }
+
+  footer.pagefoot {
+    margin-top: 4rem; padding-top: 1.6rem; border-top: 1px solid var(--line);
+    color: var(--ink-faint); font-size: 0.85rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; }
+    .topbar { display: flex; }
+    .sidebar {
+      position: fixed; inset: 0 auto 0 0; width: min(320px, 86vw); z-index: 40;
+      transform: translateX(-100%); transition: transform 0.2s ease; box-shadow: var(--shadow);
+    }
+    .shell.nav-open .sidebar { transform: translateX(0); }
+    .scrim { display: none; position: fixed; inset: 0; background: rgba(10,14,15,0.45); z-index: 35; }
+    .shell.nav-open .scrim { display: block; }
+    .content { padding-top: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="shell" id="shell">
+  <div class="scrim" id="scrim"></div>
+
+  <div class="topbar">
+    <div class="topbar-brand"><strong>Canary API</strong></div>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="sidebar">Menu</button>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <span class="brand-glyph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg>
+        </span>
+        <strong>Canary API</strong>
+      </div>
+      <span class="brand-sub">REST reference — v1</span>
+      <div class="brand-meta">
+        <span>/api/v1</span>
+        <span>JSON</span>
+        <span id="endpointCount">endpoints</span>
+      </div>
+    </div>
+
+    <div class="nav-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="navFilter" placeholder="Filter endpoints…" autocomplete="off" spellcheck="false">
+    </div>
+
+    <nav class="toc" id="toc">
+      <div class="nav-group" data-group="overview">
+        <ul>
+          <li><a class="nav-link" href="#overview" data-kw="overview architecture how it works"><span class="path-frag">Overview</span></a></li>
+          <li><a class="nav-link" href="#error-shape" data-kw="error responses shape codes"><span class="path-frag">Error responses</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Authentication">
+        <div class="nav-group-title">Authentication</div>
+        <ul>
+          <li><a class="nav-link" href="#auth-register" data-kw="register auth"><span class="m post">POST</span><span class="path-frag">/auth/register</span></a></li>
+          <li><a class="nav-link" href="#auth-login" data-kw="login auth"><span class="m post">POST</span><span class="path-frag">/auth/login</span></a></li>
+          <li><a class="nav-link" href="#auth-me" data-kw="me auth current user"><span class="m get">GET</span><span class="path-frag">/auth/me</span></a></li>
+          <li><a class="nav-link" href="#auth-logout" data-kw="logout auth"><span class="m post">POST</span><span class="path-frag">/auth/logout</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Projects">
+        <div class="nav-group-title">Projects</div>
+        <ul>
+          <li><a class="nav-link" href="#projects-list" data-kw="projects list"><span class="m get">GET</span><span class="path-frag">/projects</span></a></li>
+          <li><a class="nav-link" href="#projects-create" data-kw="projects create"><span class="m post">POST</span><span class="path-frag">/projects</span></a></li>
+          <li><a class="nav-link" href="#projects-get" data-kw="projects get one"><span class="m get">GET</span><span class="path-frag">/projects/:id</span></a></li>
+          <li><a class="nav-link" href="#projects-patch" data-kw="projects rename update"><span class="m patch">PATCH</span><span class="path-frag">/projects/:id</span></a></li>
+          <li><a class="nav-link" href="#projects-delete" data-kw="projects delete"><span class="m delete">DEL</span><span class="path-frag">/projects/:id</span></a></li>
+          <li><a class="nav-link" href="#projects-team-attach" data-kw="projects team attach share"><span class="m put">PUT</span><span class="path-frag">/projects/:id/team</span></a></li>
+          <li><a class="nav-link" href="#projects-team-detach" data-kw="projects team detach unshare"><span class="m delete">DEL</span><span class="path-frag">/projects/:id/team</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="API Keys">
+        <div class="nav-group-title">API Keys</div>
+        <ul>
+          <li><a class="nav-link" href="#keys-rotate" data-kw="api key rotate"><span class="m post">POST</span><span class="path-frag">/api-key/rotate</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Event Ingestion">
+        <div class="nav-group-title">Event Ingestion</div>
+        <ul>
+          <li><a class="nav-link" href="#events-ingest" data-kw="events ingest sdk"><span class="m post">POST</span><span class="path-frag">/events</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Errors">
+        <div class="nav-group-title">Errors</div>
+        <ul>
+          <li><a class="nav-link" href="#errors-list" data-kw="errors list groups"><span class="m get">GET</span><span class="path-frag">/errors</span></a></li>
+          <li><a class="nav-link" href="#errors-detail" data-kw="errors detail group"><span class="m get">GET</span><span class="path-frag">/errors/:id</span></a></li>
+          <li><a class="nav-link" href="#errors-assign" data-kw="errors assign assignee team lead member"><span class="m patch">PATCH</span><span class="path-frag">/errors/:id</span></a></li>
+          <li><a class="nav-link" href="#events-list" data-kw="events raw list"><span class="m get">GET</span><span class="path-frag">/events</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Stats">
+        <div class="nav-group-title">Stats</div>
+        <ul>
+          <li><a class="nav-link" href="#stats" data-kw="stats overview counts"><span class="m get">GET</span><span class="path-frag">/stats</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Devices">
+        <div class="nav-group-title">Devices</div>
+        <ul>
+          <li><a class="nav-link" href="#devices-register" data-kw="devices register push token"><span class="m post">POST</span><span class="path-frag">/devices</span></a></li>
+          <li><a class="nav-link" href="#devices-delete" data-kw="devices delete"><span class="m delete">DEL</span><span class="path-frag">/devices/:id</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Teams">
+        <div class="nav-group-title">Teams</div>
+        <ul>
+          <li><a class="nav-link" href="#teams-list" data-kw="teams list mine"><span class="m get">GET</span><span class="path-frag">/teams</span></a></li>
+          <li><a class="nav-link" href="#teams-create" data-kw="teams create"><span class="m post">POST</span><span class="path-frag">/teams</span></a></li>
+          <li><a class="nav-link" href="#teams-get" data-kw="teams get one"><span class="m get">GET</span><span class="path-frag">/teams/:id</span></a></li>
+          <li><a class="nav-link" href="#teams-patch" data-kw="teams rename"><span class="m patch">PATCH</span><span class="path-frag">/teams/:id</span></a></li>
+          <li><a class="nav-link" href="#teams-delete" data-kw="teams delete"><span class="m delete">DEL</span><span class="path-frag">/teams/:id</span></a></li>
+          <li><a class="nav-link" href="#teams-members-list" data-kw="teams members list"><span class="m get">GET</span><span class="path-frag">/teams/:id/members</span></a></li>
+          <li><a class="nav-link" href="#teams-members-patch" data-kw="teams members role lead"><span class="m patch">PATCH</span><span class="path-frag">/teams/:id/members/:userId</span></a></li>
+          <li><a class="nav-link" href="#teams-members-delete" data-kw="teams members remove leave"><span class="m delete">DEL</span><span class="path-frag">/teams/:id/members/:userId</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Invitations">
+        <div class="nav-group-title">Invitations</div>
+        <ul>
+          <li><a class="nav-link" href="#invitations-list" data-kw="invitations list pending team"><span class="m get">GET</span><span class="path-frag">/teams/:id/invitations</span></a></li>
+          <li><a class="nav-link" href="#invitations-create" data-kw="invitations create invite email"><span class="m post">POST</span><span class="path-frag">/teams/:id/invitations</span></a></li>
+          <li><a class="nav-link" href="#invitations-revoke" data-kw="invitations revoke cancel"><span class="m delete">DEL</span><span class="path-frag">/teams/:id/invitations/:id</span></a></li>
+          <li><a class="nav-link" href="#invitations-mine" data-kw="invitations mine my pending"><span class="m get">GET</span><span class="path-frag">/invitations/mine</span></a></li>
+          <li><a class="nav-link" href="#invitations-accept" data-kw="invitations accept token join"><span class="m post">POST</span><span class="path-frag">/invitations/accept</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Admin">
+        <div class="nav-group-title">Admin</div>
+        <ul>
+          <li><a class="nav-link" href="#admin-users" data-kw="admin users superadmin"><span class="m get">GET</span><span class="path-frag">/admin/users</span></a></li>
+          <li><a class="nav-link" href="#admin-teams" data-kw="admin teams superadmin clients"><span class="m get">GET</span><span class="path-frag">/admin/teams</span></a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group" data-group="Reference">
+        <div class="nav-group-title">Reference</div>
+        <ul>
+          <li><a class="nav-link" href="#notifications" data-kw="notifications push triggers"><span class="path-frag">Notifications</span></a></li>
+          <li><a class="nav-link" href="#cors" data-kw="cors origins browser"><span class="path-frag">CORS</span></a></li>
+          <li><a class="nav-link" href="#rate-limiting" data-kw="rate limit throttle 429"><span class="path-frag">Rate limiting</span></a></li>
+          <li><a class="nav-link" href="#limitations" data-kw="known limitations gaps caveats"><span class="path-frag">Known limitations</span></a></li>
+        </ul>
+      </div>
+
+      <p class="nav-empty" id="navEmpty">No matches.</p>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <header class="masthead" id="overview">
+      <span class="eyebrow">Canary Backend</span>
+      <h1 style="margin-top:0.4rem;">API Reference</h1>
+      <p class="lede">The REST contract this backend exposes to the SDK, the web dashboard, the landing/onboarding app, and the mobile app. Every request/response shape, auth rule, and error code your integration needs — nothing here requires reading backend source. As of Phase 14: org-style teams share projects, invitations bring teammates in, and a superadmin can see every user and team in the system.</p>
+      <div class="meta-row">
+        <span class="meta-pill">Base URL &nbsp;<b>https://canary-backend-pi.vercel.app</b></span>
+        <span class="meta-pill">Prefix &nbsp;<b>/api/v1</b></span>
+        <span class="meta-pill">Format &nbsp;<b>JSON</b></span>
+      </div>
+
+      <div class="flow">
+        <div class="flow-title">How a request gets here</div>
+        <div class="flow-row">
+          <span class="flow-node accent">SDK (browser)</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">POST /events</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">persist + group</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">notify (best-effort)</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-node session">Dashboard / Mobile</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">session token</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">GET /errors · /stats · /projects</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-node session">Team lead</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">POST /teams/:id/invitations</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">teammate accepts token</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">shared access to that team's projects</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="cat" id="error-shape">
+      <div class="cat-head">
+        <h2>Error responses</h2>
+        <p class="cat-desc">Every error, on every endpoint below, uses the identical shape. Build your error handling against <code>error.code</code> — it's stable; the message text may be reworded.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+        <pre class="code"><code class="json-raw">{ "success": false, "error": { "code": "INVALID_API_KEY", "message": "API key is invalid or unrecognized." } }</code></pre>
+      </div>
+
+      <table class="ref-table">
+        <thead><tr><th>Status</th><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><span class="status-num n4">400</span></td><td><code>INVALID_EVENT</code></td><td>Event ingestion only — malformed JSON or schema failure (bad type, bad timestamp, <code>http</code> event missing <code>request</code>).</td></tr>
+          <tr><td><span class="status-num n4">400</span></td><td><code>VALIDATION_ERROR</code></td><td>Auth / Projects / Devices / query params — malformed body, bad email, weak password, invalid pagination.</td></tr>
+          <tr><td><span class="status-num n4">401</span></td><td><code>UNAUTHORIZED</code></td><td><code>Authorization</code> header missing or not <code>Bearer &lt;token&gt;</code> shaped.</td></tr>
+          <tr><td><span class="status-num n4">401</span></td><td><code>INVALID_API_KEY</code></td><td>Bearer token doesn't match any project.</td></tr>
+          <tr><td><span class="status-num n4">401</span></td><td><code>INVALID_CREDENTIALS</code></td><td>Login only — wrong email <em>or</em> wrong password, deliberately identical either way.</td></tr>
+          <tr><td><span class="status-num n4">401</span></td><td><code>INVALID_SESSION</code></td><td>Bearer token doesn't match any active session (unknown, expired, logged out).</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>PROJECT_NOT_FOUND</code></td><td>No project with this id is accessible to the caller (not the owner, not on a team they belong to) — identical whether it doesn't exist or belongs to someone else.</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>ERROR_GROUP_NOT_FOUND</code></td><td>Error detail/assign only — group id doesn't exist in the (already-confirmed-accessible) project.</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>DEVICE_NOT_FOUND</code></td><td>Device delete only — same not-found-vs-not-yours ambiguity as projects.</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>TEAM_NOT_FOUND</code></td><td>Teams/Invitations — no team with this id exists for the caller, same not-found-vs-not-a-member ambiguity.</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>INVITATION_NOT_FOUND</code></td><td>No pending invitation for this token — identical for unknown, already-used, or revoked.</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>INVITATION_EXPIRED</code></td><td>Invitation accept only — the token was valid but its 7-day window passed.</td></tr>
+          <tr><td><span class="status-num n4">405</span></td><td><code>METHOD_NOT_ALLOWED</code></td><td>Any verb other than the endpoint's documented method / <code>OPTIONS</code>.</td></tr>
+          <tr><td><span class="status-num n4">400</span></td><td><code>NOT_A_TEAM_MEMBER</code></td><td>Error assignment only — the given <code>assigneeId</code> isn't on the project's team.</td></tr>
+          <tr><td><span class="status-num n4">403</span></td><td><code>FORBIDDEN</code></td><td>Admin endpoints only — authenticated, but not a <code>SUPERADMIN</code>.</td></tr>
+          <tr><td><span class="status-num n4">403</span></td><td><code>INSUFFICIENT_ROLE</code></td><td>Teams/Assignment — a <code>MEMBER</code> tried an action that requires <code>LEAD</code> (or, for assignment, requires acting on themselves).</td></tr>
+          <tr><td><span class="status-num n4">403</span></td><td><code>INVITATION_EMAIL_MISMATCH</code></td><td>Invitation accept only — the token is valid but wasn't addressed to the accepting account's email.</td></tr>
+          <tr><td><span class="status-num n4">409</span></td><td><code>EMAIL_ALREADY_REGISTERED</code></td><td>Register only — an account with this email exists.</td></tr>
+          <tr><td><span class="status-num n4">409</span></td><td><code>INVITATION_ALREADY_PENDING</code></td><td>Invitation create only — a pending invite already exists for this team + email.</td></tr>
+          <tr><td><span class="status-num n4">409</span></td><td><code>PROJECT_NOT_ON_TEAM</code></td><td>Error assignment only — the project has no team attached, so there's no one to assign to.</td></tr>
+          <tr><td><span class="status-num n4">409</span></td><td><code>LAST_TEAM_LEAD</code></td><td>Team member update/remove only — cannot leave a team with zero <code>LEAD</code>s.</td></tr>
+          <tr><td><span class="status-num n4">413</span></td><td><code>PAYLOAD_TOO_LARGE</code></td><td>Body exceeds the endpoint's limit — 32&nbsp;KiB events, 4&nbsp;KiB auth/projects/devices/teams/invitations/assignment.</td></tr>
+          <tr><td><span class="status-num n4">429</span></td><td><code>RATE_LIMITED</code></td><td>Login or event ingestion, too fast — a <code>Retry-After</code> header (seconds) is always attached.</td></tr>
+          <tr><td><span class="status-num n5">500</span></td><td><code>INTERNAL_ERROR</code></td><td>Unexpected server failure — message is always generic; real cause is server-side only.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+        <div><strong>Two independent bearer namespaces.</strong> A project API key (from creating a project) and a user session token (from login) both use <code>Authorization: Bearer &lt;token&gt;</code> — but are never interchangeable. Each endpoint below states which one it expects.</div>
+      </div>
+    </section>
+
+    <!-- ================= AUTHENTICATION ================= -->
+    <section class="cat" id="cat-auth">
+      <div class="cat-head">
+        <h2>Authentication</h2>
+        <p class="cat-desc">Register → Login → receive a session token → call authenticated endpoints with it → Logout. No cookies — the same bearer token works identically for a browser app and a native mobile client.</p>
+      </div>
+
+      <article class="endpoint" id="auth-register">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/auth/register</code>
+          <span class="auth-badge auth-public">Public</span>
+        </div>
+        <p class="endpoint-desc">Creates a developer account. Does <strong>not</strong> log the user in — call <code>/auth/login</code> afterward for a session token.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>1–200 chars</td></tr>
+                <tr><td><code>email</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>Valid email, max 320 chars, lowercased/trimmed server-side</td></tr>
+                <tr><td><code>password</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>8–200 chars</td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">201</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "user": {
+    "id": "usr_...",
+    "name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "role": "USER",
+    "createdAt": "2026-08-26T10:30:00.000Z"
+  }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <p class="note"><code>role</code> is <code>"USER"</code> unless this email is on the server's <code>SUPERADMIN_EMAILS</code> allowlist — see <a href="#admin-users">Admin</a>. Checked here and re-checked on every login; promotion-only, never auto-demoted.</p>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>409 EMAIL_ALREADY_REGISTERED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X POST "$BASE_URL/api/v1/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Ada Lovelace","email":"ada@example.com","password":"correcthorsebattery"}'</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="auth-login">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/auth/login</code>
+          <span class="auth-badge auth-public">Public</span>
+        </div>
+        <p class="endpoint-desc">Returns a session <code>token</code> exactly once. A wrong email <em>or</em> wrong password both produce the identical <code>401 INVALID_CREDENTIALS</code> — deliberate, so the response can't reveal whether an email is registered.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td><code>email</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>&nbsp;</td></tr>
+                <tr><td><code>password</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>&nbsp;</td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "token": "3054a41ae107ad28cdb95d84d0aa1c44...",
+  "user": { "id": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com", "role": "USER" }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="callout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <div><strong>Rate limited:</strong> 10 attempts per email per 5-minute window. Beyond that, <code>429 RATE_LIMITED</code> with a <code>Retry-After</code> header (seconds) — back off, don't retry in a loop. Token is valid 30 days or until logout.</div>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_CREDENTIALS</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>429 RATE_LIMITED</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>LOGIN=$(curl -s -X POST "$BASE_URL/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"ada@example.com","password":"correcthorsebattery"}')
+TOKEN=$(echo "$LOGIN" | python3 -c 'import json,sys; print(json.load(sys.stdin)["token"])')</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="auth-me">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/auth/me</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Returns the authenticated user. Never includes a password hash.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "user": { "id": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com", "role": "USER" }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/auth/me" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="auth-logout">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/auth/logout</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Invalidates the session immediately. Idempotent: an already-invalid token still returns <code>200</code> — but a <strong>missing</strong> header is still <code>401 UNAUTHORIZED</code>.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X POST "$BASE_URL/api/v1/auth/logout" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= PROJECTS ================= -->
+    <section class="cat" id="cat-projects">
+      <div class="cat-head">
+        <h2>Projects</h2>
+        <p class="cat-desc">A project represents one monitored app, with exactly one <strong>owner</strong> and, optionally, one attached <strong>team</strong> (see <a href="#teams-list">Teams</a>). Every endpoint below is scoped to projects the caller owns — a project id belonging to someone else returns <code>404 PROJECT_NOT_FOUND</code>, never <code>403</code>. Attaching a team only grants its members read access to error data and assignment (see <a href="#errors-assign">error assignment</a>) — it never transfers rename/delete/key-rotation rights away from the owner.</p>
+      </div>
+
+      <article class="endpoint" id="projects-list">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/projects</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Lists every project owned by the caller. Unpaginated — a developer's project count is expected to be small.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "projects": [
+    { "id": "proj_...", "name": "My Application", "apiKeyLastFour": "a1b2", "createdAt": "...", "updatedAt": "..." }
+  ]
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/projects" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="projects-create">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/projects</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Creates a project and issues its API key atomically — a project is never in a state of existing without one.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead>
+              <tbody><tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>&nbsp;</td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">201</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "project": {
+    "id": "proj_...",
+    "name": "My Application",
+    "apiKeyLastFour": "a1b2",
+    "createdAt": "...",
+    "updatedAt": "...",
+    "apiKey": "mnst_0dcca2bc464fa72c1691f6340c8897b0..."
+  }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="callout warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+          <div><strong>Save <code>apiKey</code> now.</strong> It's the full, raw key — shown here and only here (also once more on rotation). Every later read of this project returns only <code>apiKeyLastFour</code>.</div>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>CREATE=$(curl -s -X POST "$BASE_URL/api/v1/projects" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"name":"My Application"}')
+PROJECT_ID=$(echo "$CREATE" | python3 -c 'import json,sys; print(json.load(sys.stdin)["project"]["id"])')
+PROJECT_API_KEY=$(echo "$CREATE" | python3 -c 'import json,sys; print(json.load(sys.stdin)["project"]["apiKey"])')</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="projects-get">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/projects/:projectId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "project": { "id": "proj_...", "name": "My Application", "apiKeyLastFour": "a1b2", "createdAt": "...", "updatedAt": "..." }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="endpoint" id="projects-patch">
+        <div class="endpoint-head">
+          <span class="method method-patch">PATCH</span>
+          <code class="path">/api/v1/projects/:projectId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc"><code>name</code> is the only editable field today.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody><tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "project": { "id": "proj_...", "name": "My Renamed App", "apiKeyLastFour": "a1b2", "createdAt": "...", "updatedAt": "..." }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"name":"My Renamed App"}'</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="projects-delete">
+        <div class="endpoint-head">
+          <span class="method method-delete">DELETE</span>
+          <code class="path">/api/v1/projects/:projectId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Cascades to all of the project's error groups/events. Irreversible — no confirmation step, no soft-delete.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X DELETE "$BASE_URL/api/v1/projects/$PROJECT_ID" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="projects-team-attach">
+        <div class="endpoint-head">
+          <span class="method method-put">PUT</span>
+          <code class="path">/api/v1/projects/:projectId/team</code>
+          <span class="auth-badge auth-session">Session token · owner only</span>
+        </div>
+        <p class="endpoint-desc">Attaches the project to a team the owner already belongs to (as any role). Every member of that team immediately gains read access to the project's error data and the ability to assign error groups.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody><tr><td><code>teamId</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X PUT "$BASE_URL/api/v1/projects/$PROJECT_ID/team" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"teamId":"'"$TEAM_ID"'"}'</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="projects-team-detach">
+        <div class="endpoint-head">
+          <span class="method method-delete">DELETE</span>
+          <code class="path">/api/v1/projects/:projectId/team</code>
+          <span class="auth-badge auth-session">Session token · owner only</span>
+        </div>
+        <p class="endpoint-desc">Detaches the project's team, if any — every team member (other than the owner) immediately loses access. Idempotent: detaching an already-teamless project still returns <code>200</code>.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X DELETE "$BASE_URL/api/v1/projects/$PROJECT_ID/team" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= API KEYS ================= -->
+    <section class="cat" id="cat-keys">
+      <div class="cat-head">
+        <h2>API Keys</h2>
+        <p class="cat-desc">Keys are managed as part of Projects — creation always issues one atomically, so there's no "project with no key" state and no standalone issuance endpoint. The only additional call is rotation.</p>
+      </div>
+
+      <article class="endpoint" id="keys-rotate">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/projects/:projectId/api-key/rotate</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Issues a new key and <strong>immediately invalidates the previous one</strong> — no grace period. Any SDK still using the old key fails on its very next event.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "apiKey": "mnst_bfd181356ecfa17ba525f10d2ae1286..." }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X POST "$BASE_URL/api/v1/projects/$PROJECT_ID/api-key/rotate" \
+  -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+        <p class="note"><strong>Key lifecycle:</strong> issued at creation → shown once → used by the SDK on every event → optionally rotated (old key dies instantly, new key shown once) → retired when the project is deleted. There is no way to view a full key after its issuing response.</p>
+      </article>
+    </section>
+
+    <!-- ================= EVENT INGESTION ================= -->
+    <section class="cat" id="cat-events">
+      <div class="cat-head">
+        <h2>Event Ingestion</h2>
+        <p class="cat-desc">What the SDK actually calls, from end-user browsers. Everything else in this API reads what this endpoint writes.</p>
+      </div>
+
+      <article class="endpoint" id="events-ingest">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/events</code>
+          <span class="auth-badge auth-key">Project API key</span>
+        </div>
+        <p class="endpoint-desc">Validates, persists, and groups a captured event into <code>Project → ErrorGroup → ErrorEvent</code>. Grouped by fingerprint = <code>type</code> + <code>message</code> (plus <code>method</code>+<code>url</code> for <code>http</code> events, whose message is often a generic string shared across unrelated endpoints).</p>
+        <div class="endpoint-grid">
+          <section class="block" style="grid-column: 1 / -1;">
+            <h4 class="block-label">Request body — mirrors the SDK's <code>CapturedEvent</code> exactly</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td><code>id</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>Client-generated, max 200 chars</td></tr>
+                <tr><td><code>type</code></td><td><code>error</code> | <code>unhandledrejection</code> | <code>http</code></td><td><span class="req-yes">yes</span></td><td>&nbsp;</td></tr>
+                <tr><td><code>message</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>Truncated (not rejected) beyond 4096 chars</td></tr>
+                <tr><td><code>stack</code></td><td>string</td><td><span class="req-no">no</span></td><td>Truncated beyond 20000 chars</td></tr>
+                <tr><td><code>url</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>Page URL — not required to be a well-formed absolute URL</td></tr>
+                <tr><td><code>timestamp</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>ISO-8601, client-side event time</td></tr>
+                <tr><td><code>environment</code></td><td><code>"browser"</code></td><td><span class="req-yes">yes</span></td><td>Fixed literal</td></tr>
+                <tr><td><code>browser.userAgent</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>Truncated beyond 512 chars</td></tr>
+                <tr><td><code>request</code></td><td>object</td><td>if <code>http</code></td><td><code>{ url, method, statusCode? }</code></td></tr>
+                <tr><td><code>request.statusCode</code></td><td>number</td><td><span class="req-no">no</span></td><td>100–599; absent when the request failed outright (no response)</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "eventId": "evt_evt_abc123" }</code></pre>
+            </div>
+          </section>
+          <section class="block">
+            <h4 class="block-label">http-type example</h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "id": "evt_def456",
+  "type": "http",
+  "message": "HTTP 500 Internal Server Error",
+  "url": "https://example.com/profile",
+  "timestamp": "2026-08-26T10:31:00.000Z",
+  "environment": "browser",
+  "browser": { "userAgent": "Mozilla/5.0 ..." },
+  "request": { "url": "/api/users", "method": "GET", "statusCode": 500 }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="callout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <div><strong>Rate limited:</strong> 100 events per project per 60-second window, keyed by project id. <strong>Notification side effect:</strong> may trigger at most one push notification (see Notifications) — entirely best-effort, never affects this response.</div>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 INVALID_EVENT</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_API_KEY</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>429 RATE_LIMITED</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X POST "$BASE_URL/api/v1/events" \
+  -H "Authorization: Bearer $PROJECT_API_KEY" -H "Content-Type: application/json" \
+  -d '{
+    "id": "evt_abc123",
+    "type": "error",
+    "message": "Failed to fetch user",
+    "stack": "TypeError: Failed to fetch\n  at loadUser (app.js:42)",
+    "url": "https://example.com/profile",
+    "timestamp": "2026-08-26T10:30:00.000Z",
+    "environment": "browser",
+    "browser": { "userAgent": "Mozilla/5.0 ..." }
+  }'</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= ERRORS ================= -->
+    <section class="cat" id="cat-errors">
+      <div class="cat-head">
+        <h2>Errors</h2>
+        <p class="cat-desc">Query what event ingestion produced, and assign error groups to a team member. The web dashboard and the mobile app consume these exact same endpoints — there are no mobile-specific duplicates. Every list uses the same pagination shape: <code>"pagination": { "page": 1, "limit": 20, "total": 27 }</code> — <code>limit</code> defaults to 20 (max 100); invalid values are rejected, never silently clamped. Every endpoint here now accepts the project's <strong>owner or any of its team members</strong> — see <a href="#teams-list">Teams</a>.</p>
+      </div>
+
+      <article class="endpoint" id="errors-list">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/projects/:projectId/errors</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Lists error <strong>groups</strong> (not raw events).</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Query params</h4>
+            <table class="fields">
+              <thead><tr><th>Param</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td><code>page</code>, <code>limit</code></td><td>Pagination</td></tr>
+                <tr><td><code>search</code></td><td>Case-insensitive substring on <code>message</code></td></tr>
+                <tr><td><code>type</code></td><td><code>error</code> | <code>unhandledrejection</code> | <code>http</code></td></tr>
+                <tr><td><code>status</code></td><td>Exact <code>statusCode</code> match, 100–599</td></tr>
+                <tr><td><code>environment</code></td><td>Exact match</td></tr>
+                <tr><td><code>sort</code></td><td><code>lastSeen</code> (default) | <code>firstSeen</code> | <code>occurrences</code></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "data": [{
+    "id": "grp_...",
+    "message": "HTTP 500 Internal Server Error",
+    "type": "http",
+    "endpoint": "GET /api/users",
+    "statusCode": 500,
+    "occurrenceCount": 3,
+    "firstSeenAt": "...",
+    "lastSeenAt": "..."
+  }],
+  "pagination": { "page": 1, "limit": 20, "total": 2 }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <p class="note"><code>endpoint</code>/<code>statusCode</code> are <code>null</code> for non-<code>http</code> groups. Every field is captured from the group's <strong>first</strong> occurrence, not recomputed live.</p>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/projects/$PROJECT_ID/errors?type=http&sort=occurrences" \
+  -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="errors-detail">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/projects/:projectId/errors/:errorGroupId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Query params</h4>
+            <table class="fields">
+              <thead><tr><th>Param</th><th>Notes</th></tr></thead>
+              <tbody><tr><td><code>page</code>, <code>limit</code></td><td>Paginates the group's occurrences</td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "group": { "id": "...", "message": "...", "type": "http", "endpoint": "GET /api/users",
+    "statusCode": 500, "environment": "browser", "firstSeenAt": "...", "lastSeenAt": "...",
+    "occurrenceCount": 3, "stack": null },
+  "occurrences": {
+    "data": [{ "id": "...", "timestamp": "...", "browser": "...", "url": "...", "method": "GET", "statusCode": 500 }],
+    "pagination": { "page": 1, "limit": 20, "total": 3 }
+  }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <p class="note"><code>group.stack</code> comes from the <strong>most recent</strong> occurrence, not the first — what the error looks like right now. <code>null</code> for <code>http</code>/<code>unhandledrejection</code> events that never had one.</p>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 ERROR_GROUP_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
+  -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="errors-assign">
+        <div class="endpoint-head">
+          <span class="method method-patch">PATCH</span>
+          <code class="path">/api/v1/projects/:projectId/errors/:errorGroupId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Assigns (or unassigns) an error group to a member of the project's team. Only meaningful on a project with a team attached.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
+              <tbody><tr><td><code>assigneeId</code></td><td>string | null</td><td><code>null</code> unassigns</td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "group": { "id": "grp_...", "message": "...", "assigneeId": "usr_..." }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="callout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <div><strong>Permissions.</strong> A team <code>LEAD</code> can assign to (or unassign) any member. A <code>MEMBER</code> can only assign the group to <strong>themselves</strong>, or unassign themselves — never touch another member's assignment.</div>
+        </div>
+        <p class="note">On a successful non-null assignment, this best-effort notifies the assignee the same way event ingestion does (see <a href="#notifications">Notifications</a>) — a notification failure never affects this response. No notification fires on unassign.</p>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 NOT_A_TEAM_MEMBER</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 ERROR_GROUP_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>409 PROJECT_NOT_ON_TEAM</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code># self-assign
+curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"assigneeId":"'"$USER_ID"'"}'
+
+# unassign
+curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"assigneeId":null}'</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="events-list">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/projects/:projectId/events</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">A flat, ungrouped list of raw ingested events, most recent first — the individual-event view (grouped view is <code>/errors</code> above).</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Query params</h4>
+            <table class="fields">
+              <thead><tr><th>Param</th><th>Notes</th></tr></thead>
+              <tbody><tr><td><code>page</code>, <code>limit</code>, <code>type</code></td><td>Optional filter</td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "data": [{ "id": "...", "groupId": "...", "type": "http", "message": "...", "url": "...",
+    "method": "GET", "statusCode": 500, "timestamp": "...", "browser": "...",
+    "environment": "browser", "createdAt": "..." }],
+  "pagination": { "page": 1, "limit": 20, "total": 4 }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/projects/$PROJECT_ID/events" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= STATS ================= -->
+    <section class="cat" id="cat-stats">
+      <div class="cat-head">
+        <h2>Stats</h2>
+        <p class="cat-desc">Overview numbers for a dashboard's summary cards.</p>
+      </div>
+
+      <article class="endpoint" id="stats">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/projects/:projectId/stats</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "errors": 27, "events": 184, "lastErrorAt": "...", "activeGroups": 8 }</code></pre>
+            </div>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Fields</h4>
+            <table class="fields">
+              <tbody>
+                <tr><td><code>errors</code></td><td colspan="2">Total distinct error groups, ever</td></tr>
+                <tr><td><code>events</code></td><td colspan="2">Total individual occurrences, ever</td></tr>
+                <tr><td><code>activeGroups</code></td><td colspan="2">Groups with an occurrence in the last 24h</td></tr>
+                <tr><td><code>lastErrorAt</code></td><td colspan="2">Most recent <code>lastSeenAt</code> (<code>null</code> if none)</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/projects/$PROJECT_ID/stats" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= DEVICES ================= -->
+    <section class="cat" id="cat-devices">
+      <div class="cat-head">
+        <h2>Devices</h2>
+        <p class="cat-desc">A device belongs to the developer, not any one project — one person should hear about all of their projects' errors on the same phone.</p>
+      </div>
+
+      <article class="endpoint" id="devices-register">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/devices</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Registers (or re-registers) a push target. <code>pushToken</code> is globally unique — re-registering an existing token <strong>upserts</strong> onto that row rather than duplicating it, so repeated calls after an app reinstall are safe.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody>
+                <tr><td><code>platform</code></td><td><code>ios</code> | <code>android</code></td><td><span class="req-yes">yes</span></td></tr>
+                <tr><td><code>pushToken</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "device": { "id": "dev_...", "platform": "ios", "createdAt": "..." } }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X POST "$BASE_URL/api/v1/devices" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"platform":"ios","pushToken":"expo-push-token-abc123"}'</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="devices-delete">
+        <div class="endpoint-head">
+          <span class="method method-delete">DELETE</span>
+          <code class="path">/api/v1/devices/:deviceId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <p class="note">No <code>GET /api/v1/devices</code> (list) exists — only register/delete were in scope.</p>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 DEVICE_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X DELETE "$BASE_URL/api/v1/devices/$DEVICE_ID" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= NOTIFICATIONS ================= -->
+    <section class="cat" id="notifications">
+      <div class="cat-head">
+        <h2>Notifications</h2>
+        <p class="cat-desc">Prepares the backend for mobile push without integrating a real provider yet. There's no dedicated endpoint — this documents the side effect of <code>POST /api/v1/events</code>.</p>
+      </div>
+
+      <div class="flow" style="margin-top:0;">
+        <div class="flow-title">Architecture</div>
+        <div class="flow-row">
+          <span class="flow-node accent">SDK</span><span class="flow-arrow">→</span>
+          <span class="flow-node">POST /events</span><span class="flow-arrow">→</span>
+          <span class="flow-node">persist event</span><span class="flow-arrow">→</span>
+          <span class="flow-node">determine trigger</span><span class="flow-arrow">→</span>
+          <span class="flow-node">NotificationService</span><span class="flow-arrow">→</span>
+          <span class="flow-node">devices</span>
+        </div>
+      </div>
+
+      <div class="callout warn" style="margin-top:1.4rem;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+        <div><strong>Logged, not delivered.</strong> No Expo/FCM credentials exist in this project — <code>ConsoleNotificationService</code> logs exactly what would be sent. Swapping in a real provider changes one factory function, nothing else.</div>
+      </div>
+
+      <div style="margin-top:1.6rem;">
+        <h4 class="block-label">Trigger rules — at most one per event</h4>
+        <div class="trigger-row">
+          <span class="trigger-rank">1st</span>
+          <span class="trigger-name">NEW_ERROR</span>
+          <span class="trigger-cond">The event created a brand-new error group.</span>
+        </div>
+        <div class="trigger-row">
+          <span class="trigger-rank">2nd</span>
+          <span class="trigger-name">SERIOUS_ERROR</span>
+          <span class="trigger-cond">A repeat <code>http</code> occurrence with <code>statusCode &ge; 500</code>.</span>
+        </div>
+        <div class="trigger-row">
+          <span class="trigger-rank">3rd</span>
+          <span class="trigger-name">REACTIVATED_ERROR</span>
+          <span class="trigger-cond">The group's previous occurrence was over 24h ago.</span>
+        </div>
+      </div>
+      <p class="note" style="border:none;padding-top:0.8rem;">If more than one applies, only the highest-priority trigger fires. An ordinary repeat of an already-active group triggers nothing.</p>
+
+      <div style="margin-top:1.2rem;">
+        <h4 class="block-label">Payload — deep-links a mobile client to the error</h4>
+        <div class="code-block">
+          <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+          <pre class="code"><code class="json-raw">{
+  "type": "NEW_ERROR",
+  "projectId": "proj_...",
+  "errorGroupId": "grp_...",
+  "title": "New Error Detected",
+  "message": "500 GET /api/users"
+}</code></pre>
+        </div>
+      </div>
+
+      <div style="margin-top:1.6rem;">
+        <div class="trigger-row">
+          <span class="trigger-rank">manual</span>
+          <span class="trigger-name">ASSIGNED_ERROR</span>
+          <span class="trigger-cond">Fired by <a href="#errors-assign"><code>PATCH /errors/:id</code></a>, never by event ingestion — doesn't compete with the three triggers above and can fire alongside one of them on the same group.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TEAMS ================= -->
+    <section class="cat" id="cat-teams">
+      <div class="cat-head">
+        <h2>Teams</h2>
+        <p class="cat-desc">An org-style group of users that can jointly access one or more projects. A project's <strong>owner</strong> decides whether to attach it to a team they belong to (see <a href="#projects-team-attach"><code>PUT /projects/:id/team</code></a>) — once attached, every team member gets read access to that project's error data and can assign its error groups. Every endpoint below returns <code>404 TEAM_NOT_FOUND</code> — not <code>403</code> — for a team id that doesn't exist or the caller isn't a member of, the same IDOR-safe pattern as Projects.</p>
+      </div>
+
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <div>Every team has exactly one role besides plain membership: <code>LEAD</code>. A team can have several LEADs; whoever creates a team is automatically its first one.</div>
+      </div>
+
+      <article class="endpoint" id="teams-list">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/teams</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Lists every team the caller belongs to, any role.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "teams": [{ "id": "team_...", "name": "Rocket", "createdById": "usr_...", "createdAt": "...", "updatedAt": "..." }]
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/teams" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="teams-create">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/teams</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Creates a team — the caller becomes its first <code>LEAD</code>.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody><tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">201</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "team": { "id": "team_...", "name": "Rocket", "createdById": "usr_...", "createdAt": "...", "updatedAt": "..." }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>TEAM=$(curl -s -X POST "$BASE_URL/api/v1/teams" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"name":"Rocket"}')
+TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)["team"]["id"])')</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="teams-get">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/teams/:teamId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "team": { "id": "...", "name": "...", "createdById": "...", "createdAt": "...", "updatedAt": "..." } }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="endpoint" id="teams-patch">
+        <div class="endpoint-head">
+          <span class="method method-patch">PATCH</span>
+          <code class="path">/api/v1/teams/:teamId</code>
+          <span class="auth-badge auth-session">Session token · LEAD only</span>
+        </div>
+        <p class="endpoint-desc">Renames the team.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody><tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
+            </table>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="endpoint" id="teams-delete">
+        <div class="endpoint-head">
+          <span class="method method-delete">DELETE</span>
+          <code class="path">/api/v1/teams/:teamId</code>
+          <span class="auth-badge auth-session">Session token · LEAD only</span>
+        </div>
+        <p class="endpoint-desc">Deletes the team. Attached projects are <strong>detached</strong>, not deleted — their error data is untouched, they just revert to owner-only access.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="endpoint" id="teams-members-list">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/teams/:teamId/members</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "members": [{ "userId": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com", "role": "LEAD", "createdAt": "..." }]
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/teams/$TEAM_ID/members" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="teams-members-patch">
+        <div class="endpoint-head">
+          <span class="method method-patch">PATCH</span>
+          <code class="path">/api/v1/teams/:teamId/members/:userId</code>
+          <span class="auth-badge auth-session">Session token · LEAD only</span>
+        </div>
+        <p class="endpoint-desc">Changes a member's role. Blocked if it would leave the team with zero <code>LEAD</code>s.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody><tr><td><code>role</code></td><td><code>"LEAD"</code> | <code>"MEMBER"</code></td><td><span class="req-yes">yes</span></td></tr></tbody>
+            </table>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>409 LAST_TEAM_LEAD</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="endpoint" id="teams-members-delete">
+        <div class="endpoint-head">
+          <span class="method method-delete">DELETE</span>
+          <code class="path">/api/v1/teams/:teamId/members/:userId</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Removes a member. A <code>LEAD</code> can remove anyone; any member can remove <strong>themselves</strong> ("leave team") regardless of role. Blocked if it would leave the team with zero <code>LEAD</code>s.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>409 LAST_TEAM_LEAD</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ================= INVITATIONS ================= -->
+    <section class="cat" id="cat-invitations">
+      <div class="cat-head">
+        <h2>Invitations</h2>
+        <p class="cat-desc">How someone joins a team. There is no email-delivery mechanism in this backend, so an invitation's raw token is returned directly in the creation response — this backend also best-effort attempts to email it, but today that's a logging-only placeholder (no provider configured yet). <strong>The token in the API response is the reliable way to deliver an invite</strong>, not a fallback.</p>
+      </div>
+
+      <article class="endpoint" id="invitations-list">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/teams/:teamId/invitations</code>
+          <span class="auth-badge auth-session">Session token · LEAD only</span>
+        </div>
+        <p class="endpoint-desc">Lists the team's pending invitations.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "invitations": [{ "id": "...", "teamId": "...", "invitedEmail": "bob@example.com", "invitedRole": "MEMBER", "status": "PENDING", "expiresAt": "...", "createdAt": "..." }]
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="endpoint" id="invitations-create">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/teams/:teamId/invitations</code>
+          <span class="auth-badge auth-session">Session token · LEAD only</span>
+        </div>
+        <p class="endpoint-desc">Creates an invitation. Rejects a duplicate pending invitation for the same team + email.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td><code>email</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>&nbsp;</td></tr>
+                <tr><td><code>role</code></td><td><code>"LEAD"</code> | <code>"MEMBER"</code></td><td><span class="req-no">no</span></td><td>Defaults to <code>MEMBER</code></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">201</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "invitation": { "id": "...", "invitedEmail": "bob@example.com", "invitedRole": "MEMBER", "status": "PENDING", "expiresAt": "..." },
+  "token": "927802a82e0c06b52bb4cb8ed862dd5..."
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="callout warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+          <div><strong><code>token</code> is shown exactly once</strong>, here — there is no way to retrieve it again. It expires after 7 days.</div>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>409 INVITATION_ALREADY_PENDING</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>INVITE=$(curl -s -X POST "$BASE_URL/api/v1/teams/$TEAM_ID/invitations" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"email":"bob@example.com"}')
+INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys.stdin)["token"])')</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="invitations-revoke">
+        <div class="endpoint-head">
+          <span class="method method-delete">DELETE</span>
+          <code class="path">/api/v1/teams/:teamId/invitations/:invitationId</code>
+          <span class="auth-badge auth-session">Session token · LEAD only</span>
+        </div>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 INVITATION_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="endpoint" id="invitations-mine">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/invitations/mine</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Pending invitations addressed to the caller's own account email — how someone discovers they've been invited, without already knowing a team id.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "invitations": [ ... ] }</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/invitations/mine" -H "Authorization: Bearer $TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="invitations-accept">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <code class="path">/api/v1/invitations/accept</code>
+          <span class="auth-badge auth-session">Session token</span>
+        </div>
+        <p class="endpoint-desc">Accepts an invitation and joins its team, at the role the invitation specified. Idempotent if the caller is already a member.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Request body</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody><tr><td><code>token</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "teamId": "team_..." }</code></pre>
+            </div>
+          </section>
+        </div>
+        <p class="note">An unknown, already-used, or revoked token all produce the identical <code>404 INVITATION_NOT_FOUND</code> — so a caller can't use the response to check whether a guessed token was ever valid. An expired token is the one distinguishable case (<code>404 INVITATION_EXPIRED</code>) since it did genuinely exist.</p>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 INVITATION_EMAIL_MISMATCH</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 INVITATION_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 INVITATION_EXPIRED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s -X POST "$BASE_URL/api/v1/invitations/accept" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"token":"'"$INVITE_TOKEN"'"}'</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= ADMIN ================= -->
+    <section class="cat" id="cat-admin">
+      <div class="cat-head">
+        <h2>Admin</h2>
+        <p class="cat-desc">Read-only oversight for a <strong>superadmin</strong> — a role granted only via the server's <code>SUPERADMIN_EMAILS</code> environment variable, re-checked (and promoted, if newly matching) on every login/register. Promotion-only: removing an email from the allowlist doesn't demote an already-promoted account. There's no endpoint to grant/revoke this role — it's an environment-level bootstrap.</p>
+      </div>
+
+      <article class="endpoint" id="admin-users">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/admin/users</code>
+          <span class="auth-badge auth-session">Session token · SUPERADMIN only</span>
+        </div>
+        <p class="endpoint-desc">Every registered user in the system, newest first.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Query params</h4>
+            <table class="fields">
+              <thead><tr><th>Param</th><th>Notes</th></tr></thead>
+              <tbody><tr><td><code>page</code>, <code>limit</code></td><td>Pagination</td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "data": [{ "id": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com", "role": "USER", "createdAt": "..." }],
+  "pagination": { "page": 1, "limit": 20, "total": 42 }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 FORBIDDEN</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/admin/users" -H "Authorization: Bearer $SUPERADMIN_TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="endpoint" id="admin-teams">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/admin/teams</code>
+          <span class="auth-badge auth-session">Session token · SUPERADMIN only</span>
+        </div>
+        <p class="endpoint-desc">Every team in the system ("your clients"), with member/project counts — distinct from <code>GET /teams</code> above, which only lists the caller's own teams.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Query params</h4>
+            <table class="fields">
+              <thead><tr><th>Param</th><th>Notes</th></tr></thead>
+              <tbody><tr><td><code>page</code>, <code>limit</code></td><td>Pagination</td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{
+  "success": true,
+  "data": [{ "id": "team_...", "name": "Rocket", "createdAt": "...", "createdBy": { "id": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com" }, "memberCount": 3, "projectCount": 2 }],
+  "pagination": { "page": 1, "limit": 20, "total": 6 }
+}</code></pre>
+            </div>
+          </section>
+        </div>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>403 FORBIDDEN</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/admin/teams" -H "Authorization: Bearer $SUPERADMIN_TOKEN"</code></pre>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================= CORS ================= -->
+    <section class="cat" id="cors">
+      <div class="cat-head">
+        <h2>CORS</h2>
+        <p class="cat-desc">Applies to every endpoint — browsers call this API directly, so every route supports CORS the same way, via an explicit allowlist (<code>CORS_ALLOWED_ORIGINS</code>). Never a wildcard.</p>
+      </div>
+      <ul class="limits">
+        <li>An allowed origin gets <code>Access-Control-Allow-Origin</code> reflected back, plus <code>Access-Control-Allow-Methods</code> (that route's real methods + <code>OPTIONS</code>) and <code>Access-Control-Allow-Headers: Content-Type, Authorization</code>.</li>
+        <li>A disallowed or missing origin gets <strong>no</strong> CORS headers on either the preflight or the actual response — the browser blocks it client-side.</li>
+        <li>Non-browser callers (curl, server-to-server, the mobile app's HTTP client) are entirely unaffected — CORS is a browser-only mechanism.</li>
+        <li>A custom <code>Authorization</code> header and JSON content type mean every cross-origin <code>POST</code> triggers a real preflight <code>OPTIONS</code> first.</li>
+        <li>No <code>Access-Control-Allow-Credentials</code> is ever sent — this API only uses bearer tokens, never cookies.</li>
+      </ul>
+    </section>
+
+    <!-- ================= RATE LIMITING ================= -->
+    <section class="cat" id="rate-limiting">
+      <div class="cat-head">
+        <h2>Rate limiting</h2>
+        <p class="cat-desc">Two endpoints are limited — a simple in-memory fixed-window counter, no Redis or other new infrastructure. Correct for a single-process deployment; a multi-instance deployment would need a shared store.</p>
+      </div>
+      <table class="ref-table">
+        <thead><tr><th>Endpoint</th><th>Limit</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post" style="font-size:0.7rem;">POST</span> <code>/auth/login</code></td><td>10 / 5 min</td><td>Normalized email</td></tr>
+          <tr><td><span class="method method-post" style="font-size:0.7rem;">POST</span> <code>/events</code></td><td>100 / 60 sec</td><td>Project id</td></tr>
+        </tbody>
+      </table>
+      <p class="note" style="border:none;padding-top:1rem;">Exceeding a limit returns <code>429 RATE_LIMITED</code> with a <code>Retry-After</code> header (seconds until reset) — read it and back off, don't retry in a tight loop.</p>
+    </section>
+
+    <!-- ================= LIMITATIONS ================= -->
+    <section class="cat" id="limitations">
+      <div class="cat-head">
+        <h2>Known limitations</h2>
+        <p class="cat-desc">Documented gaps, not silent ones — nothing below is a bug you'll discover the hard way.</p>
+      </div>
+      <ul class="limits">
+        <li><strong>Notifications are logged, not delivered</strong> — no real push provider is wired up yet.</li>
+        <li><strong>CORS is a single global allowlist</strong>, not per-project yet.</li>
+        <li><strong>Rate limiting is in-memory and per-process</strong> — not correct for a horizontally-scaled deployment.</li>
+        <li><strong>No pagination</strong> on <code>GET /api/v1/projects</code> — fine while project counts stay small.</li>
+        <li><strong>API-key rotation is immediate and unconditional</strong> — no grace period, no rollover window.</li>
+        <li><strong>Project deletion is immediate and irreversible</strong> — cascades, no undo.</li>
+        <li><strong>No "log out everywhere"</strong> — only the exact token given to <code>/auth/logout</code> is invalidated.</li>
+        <li><strong>No password reset flow</strong> — needs an email delivery mechanism this backend doesn't have.</li>
+        <li><strong>Error grouping is message-based, not stack-based</strong> — a textually different message for "the same bug" forms a separate group.</li>
+        <li><strong>Search is a plain substring match</strong> on <code>message</code> — no fuzzy matching, no full-text index.</li>
+        <li><strong>No <code>GET /api/v1/devices</code></strong> — only register/delete exist.</li>
+        <li><strong><code>os</code> and <code>metadata</code></strong> exist as columns but are always <code>null</code> — reserved, not derived.</li>
+        <li><strong>No cascading unassign</strong> when a member is removed from a team while still assigned to one of its error groups — the (now stale) assignment is left in place, not automatically cleared.</li>
+        <li><strong>Invitation uniqueness is application-level, not a DB constraint</strong> — Postgres can only express "unique while pending" via a partial index, not expressible in the schema DSL used here.</li>
+        <li><strong>Invitation emails are logged, not delivered</strong> — same situation as push notifications: no email provider is wired up yet. The token in the creation response is the reliable delivery path today.</li>
+        <li><strong>Superadmin role is snapshotted into the session token at login</strong> — a change to <code>SUPERADMIN_EMAILS</code> only takes effect on that user's next login, not live mid-session.</li>
+        <li><strong>No endpoint to grant/revoke <code>SUPERADMIN</code></strong> — bootstrapped purely via the environment variable, promotion-only.</li>
+        <li><strong>A team grants project access, not co-ownership</strong> — members (including LEADs) can read error data and manage assignment; only the direct owner can rename/delete a project, rotate its key, or attach/detach a team.</li>
+      </ul>
+    </section>
+
+    <footer class="pagefoot">
+      <span>Canary API · v1</span>
+      <span>Backend built Phases 7–14 · SDK built Phases 0–6</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- JSON syntax highlighting ---------- */
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function highlightJSON(raw) {
+    var esc = escapeHtml(raw);
+    return esc.replace(/("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\b\d+\.?\d*\b)/g,
+      function (match, str, colon, kw, num) {
+        if (str) {
+          var cls = colon ? "jkey" : "jstr";
+          return '<span class="' + cls + '">' + str + "</span>" + (colon || "");
+        }
+        if (kw) return '<span class="jkw">' + kw + "</span>";
+        if (num) return '<span class="jnum">' + num + "</span>";
+        return match;
+      });
+  }
+  document.querySelectorAll("code.json-raw").forEach(function (el) {
+    el.innerHTML = highlightJSON(el.textContent);
+  });
+
+  /* ---------- Endpoint count (derived from the nav, never hand-maintained) ---------- */
+  var endpointCountEl = document.getElementById("endpointCount");
+  if (endpointCountEl) {
+    var n = document.querySelectorAll(".nav-link .m").length;
+    endpointCountEl.textContent = n + " endpoints";
+  }
+
+  /* ---------- Copy buttons ---------- */
+  document.querySelectorAll("[data-copy-target]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var block = btn.closest(".code-block");
+      var codeEl = block ? block.querySelector("pre.code") : null;
+      if (!codeEl) return;
+      var text = codeEl.textContent;
+      function done(ok) {
+        btn.textContent = ok ? "Copied" : "Copy failed";
+        btn.classList.toggle("copied", ok);
+        setTimeout(function () {
+          btn.textContent = "Copy";
+          btn.classList.remove("copied");
+        }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+      } else {
+        try {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          done(true);
+        } catch (e) {
+          done(false);
+        }
+      }
+    });
+  });
+
+  /* ---------- Sidebar filter ---------- */
+  var filterInput = document.getElementById("navFilter");
+  var groups = document.querySelectorAll(".nav-group[data-group]");
+  var emptyMsg = document.getElementById("navEmpty");
+  if (filterInput) {
+    filterInput.addEventListener("input", function () {
+      var q = filterInput.value.trim().toLowerCase();
+      var anyVisible = false;
+      groups.forEach(function (group) {
+        var items = group.querySelectorAll("li");
+        var groupHasMatch = false;
+        items.forEach(function (li) {
+          var link = li.querySelector(".nav-link");
+          var haystack = (link.textContent + " " + (link.getAttribute("data-kw") || "")).toLowerCase();
+          var match = q === "" || haystack.indexOf(q) !== -1;
+          li.style.display = match ? "" : "none";
+          if (match) groupHasMatch = true;
+        });
+        group.style.display = groupHasMatch ? "" : "none";
+        if (groupHasMatch) anyVisible = true;
+      });
+      emptyMsg.style.display = anyVisible ? "none" : "block";
+    });
+  }
+
+  /* ---------- Mobile nav toggle ---------- */
+  var shell = document.getElementById("shell");
+  var menuBtn = document.getElementById("menuBtn");
+  var scrim = document.getElementById("scrim");
+  function closeNav() {
+    shell.classList.remove("nav-open");
+    if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+  }
+  if (menuBtn) {
+    menuBtn.addEventListener("click", function () {
+      var open = shell.classList.toggle("nav-open");
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+  if (scrim) scrim.addEventListener("click", closeNav);
+  document.querySelectorAll(".nav-link").forEach(function (link) {
+    link.addEventListener("click", closeNav);
+  });
+
+  /* ---------- Scrollspy ---------- */
+  var sections = Array.prototype.slice.call(document.querySelectorAll("main.content [id]"));
+  var links = document.querySelectorAll(".nav-link");
+  function linkFor(id) {
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].getAttribute("href") === "#" + id) return links[i];
+    }
+    return null;
+  }
+  if ("IntersectionObserver" in window && sections.length) {
+    var current = null;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          if (current) current.classList.remove("active");
+          var l = linkFor(entry.target.id);
+          if (l) { l.classList.add("active"); current = l; }
+        }
+      });
+    }, { rootMargin: "-15% 0px -70% 0px", threshold: 0 });
+    sections.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

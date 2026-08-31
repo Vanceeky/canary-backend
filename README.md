@@ -7,8 +7,10 @@ web dashboard, and a mobile app against the same contract.
 This repo is a snapshot of the `backend/` workspace from the original
 `mini-sentry` monorepo, split out for a standalone Vercel deployment. It
 does not share git history with that repo — see `docs/API.md` for the full
-REST contract, also published as a browsable reference at
-[Mini Sentry API](https://claude.ai/code/artifact/fd8174ef-304d-46b4-a980-94710544565a).
+REST contract, also served live as a browsable page at
+[canary-backend-pi.vercel.app/docs.html](https://canary-backend-pi.vercel.app/docs.html)
+(`public/docs.html` — a static export of the same reference, self-hosted
+here instead of on a separate Claude Artifact link).
 
 ## Requirements
 
@@ -80,4 +82,5 @@ See `.env.example` for the full annotated list.
 
 See [`docs/API.md`](./docs/API.md) for every endpoint's request/response
 shape, auth requirements, and error codes — or browse the same content as a
-searchable page: [Mini Sentry API](https://claude.ai/code/artifact/fd8174ef-304d-46b4-a980-94710544565a).
+searchable page at
+[canary-backend-pi.vercel.app/docs.html](https://canary-backend-pi.vercel.app/docs.html).
