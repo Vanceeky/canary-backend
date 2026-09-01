@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Canary API</title>
-<meta name="description" content="Complete REST reference for the Canary error-monitoring backend — authentication, projects, event ingestion, error queries, teams, invitations, assignment, admin, and notifications.">
+<meta name="description" content="Complete REST reference for the Canary error-monitoring backend — authentication, projects, event ingestion, error queries, project members, invitations, error status, admin, and notifications.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -563,8 +563,6 @@
           <li><a class="nav-link" href="#projects-get" data-kw="projects get one"><span class="m get">GET</span><span class="path-frag">/projects/:id</span></a></li>
           <li><a class="nav-link" href="#projects-patch" data-kw="projects rename update"><span class="m patch">PATCH</span><span class="path-frag">/projects/:id</span></a></li>
           <li><a class="nav-link" href="#projects-delete" data-kw="projects delete"><span class="m delete">DEL</span><span class="path-frag">/projects/:id</span></a></li>
-          <li><a class="nav-link" href="#projects-team-attach" data-kw="projects team attach share"><span class="m put">PUT</span><span class="path-frag">/projects/:id/team</span></a></li>
-          <li><a class="nav-link" href="#projects-team-detach" data-kw="projects team detach unshare"><span class="m delete">DEL</span><span class="path-frag">/projects/:id/team</span></a></li>
         </ul>
       </div>
 
@@ -587,7 +585,7 @@
         <ul>
           <li><a class="nav-link" href="#errors-list" data-kw="errors list groups"><span class="m get">GET</span><span class="path-frag">/errors</span></a></li>
           <li><a class="nav-link" href="#errors-detail" data-kw="errors detail group"><span class="m get">GET</span><span class="path-frag">/errors/:id</span></a></li>
-          <li><a class="nav-link" href="#errors-assign" data-kw="errors assign assignee team lead member"><span class="m patch">PATCH</span><span class="path-frag">/errors/:id</span></a></li>
+          <li><a class="nav-link" href="#errors-assign" data-kw="errors assign assignee status owner member"><span class="m patch">PATCH</span><span class="path-frag">/errors/:id</span></a></li>
           <li><a class="nav-link" href="#events-list" data-kw="events raw list"><span class="m get">GET</span><span class="path-frag">/events</span></a></li>
         </ul>
       </div>
@@ -607,26 +605,21 @@
         </ul>
       </div>
 
-      <div class="nav-group" data-group="Teams">
-        <div class="nav-group-title">Teams</div>
+      <div class="nav-group" data-group="Project Members">
+        <div class="nav-group-title">Project Members</div>
         <ul>
-          <li><a class="nav-link" href="#teams-list" data-kw="teams list mine"><span class="m get">GET</span><span class="path-frag">/teams</span></a></li>
-          <li><a class="nav-link" href="#teams-create" data-kw="teams create"><span class="m post">POST</span><span class="path-frag">/teams</span></a></li>
-          <li><a class="nav-link" href="#teams-get" data-kw="teams get one"><span class="m get">GET</span><span class="path-frag">/teams/:id</span></a></li>
-          <li><a class="nav-link" href="#teams-patch" data-kw="teams rename"><span class="m patch">PATCH</span><span class="path-frag">/teams/:id</span></a></li>
-          <li><a class="nav-link" href="#teams-delete" data-kw="teams delete"><span class="m delete">DEL</span><span class="path-frag">/teams/:id</span></a></li>
-          <li><a class="nav-link" href="#teams-members-list" data-kw="teams members list"><span class="m get">GET</span><span class="path-frag">/teams/:id/members</span></a></li>
-          <li><a class="nav-link" href="#teams-members-patch" data-kw="teams members role lead"><span class="m patch">PATCH</span><span class="path-frag">/teams/:id/members/:userId</span></a></li>
-          <li><a class="nav-link" href="#teams-members-delete" data-kw="teams members remove leave"><span class="m delete">DEL</span><span class="path-frag">/teams/:id/members/:userId</span></a></li>
+          <li><a class="nav-link" href="#members-list" data-kw="members list project owner"><span class="m get">GET</span><span class="path-frag">/projects/:id/members</span></a></li>
+          <li><a class="nav-link" href="#members-delete" data-kw="members remove leave delete"><span class="m delete">DEL</span><span class="path-frag">/projects/:id/members/:userId</span></a></li>
         </ul>
       </div>
 
       <div class="nav-group" data-group="Invitations">
         <div class="nav-group-title">Invitations</div>
         <ul>
-          <li><a class="nav-link" href="#invitations-list" data-kw="invitations list pending team"><span class="m get">GET</span><span class="path-frag">/teams/:id/invitations</span></a></li>
-          <li><a class="nav-link" href="#invitations-create" data-kw="invitations create invite email"><span class="m post">POST</span><span class="path-frag">/teams/:id/invitations</span></a></li>
-          <li><a class="nav-link" href="#invitations-revoke" data-kw="invitations revoke cancel"><span class="m delete">DEL</span><span class="path-frag">/teams/:id/invitations/:id</span></a></li>
+          <li><a class="nav-link" href="#invitations-list" data-kw="invitations list pending project"><span class="m get">GET</span><span class="path-frag">/projects/:id/invitations</span></a></li>
+          <li><a class="nav-link" href="#invitations-create" data-kw="invitations create invite email"><span class="m post">POST</span><span class="path-frag">/projects/:id/invitations</span></a></li>
+          <li><a class="nav-link" href="#invitations-revoke" data-kw="invitations revoke cancel"><span class="m delete">DEL</span><span class="path-frag">/projects/:id/invitations/:id</span></a></li>
+          <li><a class="nav-link" href="#invitations-preview" data-kw="invitations preview public token"><span class="m get">GET</span><span class="path-frag">/invitations/preview</span></a></li>
           <li><a class="nav-link" href="#invitations-mine" data-kw="invitations mine my pending"><span class="m get">GET</span><span class="path-frag">/invitations/mine</span></a></li>
           <li><a class="nav-link" href="#invitations-accept" data-kw="invitations accept token join"><span class="m post">POST</span><span class="path-frag">/invitations/accept</span></a></li>
         </ul>
@@ -636,7 +629,7 @@
         <div class="nav-group-title">Admin</div>
         <ul>
           <li><a class="nav-link" href="#admin-users" data-kw="admin users superadmin"><span class="m get">GET</span><span class="path-frag">/admin/users</span></a></li>
-          <li><a class="nav-link" href="#admin-teams" data-kw="admin teams superadmin clients"><span class="m get">GET</span><span class="path-frag">/admin/teams</span></a></li>
+          <li><a class="nav-link" href="#admin-projects" data-kw="admin projects superadmin clients"><span class="m get">GET</span><span class="path-frag">/admin/projects</span></a></li>
         </ul>
       </div>
 
@@ -659,7 +652,7 @@
     <header class="masthead" id="overview">
       <span class="eyebrow">Canary Backend</span>
       <h1 style="margin-top:0.4rem;">API Reference</h1>
-      <p class="lede">The REST contract this backend exposes to the SDK, the web dashboard, the landing/onboarding app, and the mobile app. Every request/response shape, auth rule, and error code your integration needs — nothing here requires reading backend source. As of Phase 14: org-style teams share projects, invitations bring teammates in, and a superadmin can see every user and team in the system.</p>
+      <p class="lede">The REST contract this backend exposes to the SDK, the web dashboard, the landing/onboarding app, and the mobile app. Every request/response shape, auth rule, and error code your integration needs — nothing here requires reading backend source. As of Phase 15: each project has members directly, invitations bring teammates in — including a one-step register-with-token join straight from the invite — and a superadmin can see every user and project in the system.</p>
       <div class="meta-row">
         <span class="meta-pill">Base URL &nbsp;<b>https://canary-backend-pi.vercel.app</b></span>
         <span class="meta-pill">Prefix &nbsp;<b>/api/v1</b></span>
@@ -685,13 +678,13 @@
           <span class="flow-node">GET /errors · /stats · /projects</span>
         </div>
         <div class="flow-row">
-          <span class="flow-node session">Team lead</span>
+          <span class="flow-node session">Project owner</span>
           <span class="flow-arrow">→</span>
-          <span class="flow-node">POST /teams/:id/invitations</span>
+          <span class="flow-node">POST /projects/:id/invitations</span>
           <span class="flow-arrow">→</span>
-          <span class="flow-node">teammate accepts token</span>
+          <span class="flow-node">invitee registers with token (or accepts)</span>
           <span class="flow-arrow">→</span>
-          <span class="flow-node">shared access to that team's projects</span>
+          <span class="flow-node">access to that project</span>
         </div>
       </div>
     </header>
@@ -716,22 +709,20 @@
           <tr><td><span class="status-num n4">401</span></td><td><code>INVALID_API_KEY</code></td><td>Bearer token doesn't match any project.</td></tr>
           <tr><td><span class="status-num n4">401</span></td><td><code>INVALID_CREDENTIALS</code></td><td>Login only — wrong email <em>or</em> wrong password, deliberately identical either way.</td></tr>
           <tr><td><span class="status-num n4">401</span></td><td><code>INVALID_SESSION</code></td><td>Bearer token doesn't match any active session (unknown, expired, logged out).</td></tr>
-          <tr><td><span class="status-num n4">404</span></td><td><code>PROJECT_NOT_FOUND</code></td><td>No project with this id is accessible to the caller (not the owner, not on a team they belong to) — identical whether it doesn't exist or belongs to someone else.</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>PROJECT_NOT_FOUND</code></td><td>No project with this id is accessible to the caller (not the owner, not a member of it) — identical whether it doesn't exist or belongs to someone else.</td></tr>
           <tr><td><span class="status-num n4">404</span></td><td><code>ERROR_GROUP_NOT_FOUND</code></td><td>Error detail/assign only — group id doesn't exist in the (already-confirmed-accessible) project.</td></tr>
           <tr><td><span class="status-num n4">404</span></td><td><code>DEVICE_NOT_FOUND</code></td><td>Device delete only — same not-found-vs-not-yours ambiguity as projects.</td></tr>
-          <tr><td><span class="status-num n4">404</span></td><td><code>TEAM_NOT_FOUND</code></td><td>Teams/Invitations — no team with this id exists for the caller, same not-found-vs-not-a-member ambiguity.</td></tr>
           <tr><td><span class="status-num n4">404</span></td><td><code>INVITATION_NOT_FOUND</code></td><td>No pending invitation for this token — identical for unknown, already-used, or revoked.</td></tr>
-          <tr><td><span class="status-num n4">404</span></td><td><code>INVITATION_EXPIRED</code></td><td>Invitation accept only — the token was valid but its 7-day window passed.</td></tr>
+          <tr><td><span class="status-num n4">404</span></td><td><code>INVITATION_EXPIRED</code></td><td>Invitation accept/preview only — the token was valid but its 7-day window passed.</td></tr>
           <tr><td><span class="status-num n4">405</span></td><td><code>METHOD_NOT_ALLOWED</code></td><td>Any verb other than the endpoint's documented method / <code>OPTIONS</code>.</td></tr>
-          <tr><td><span class="status-num n4">400</span></td><td><code>NOT_A_TEAM_MEMBER</code></td><td>Error assignment only — the given <code>assigneeId</code> isn't on the project's team.</td></tr>
+          <tr><td><span class="status-num n4">400</span></td><td><code>NOT_A_PROJECT_MEMBER</code></td><td>Error assignment/member removal — the given user isn't a member of this project.</td></tr>
           <tr><td><span class="status-num n4">403</span></td><td><code>FORBIDDEN</code></td><td>Admin endpoints only — authenticated, but not a <code>SUPERADMIN</code>.</td></tr>
-          <tr><td><span class="status-num n4">403</span></td><td><code>INSUFFICIENT_ROLE</code></td><td>Teams/Assignment — a <code>MEMBER</code> tried an action that requires <code>LEAD</code> (or, for assignment, requires acting on themselves).</td></tr>
+          <tr><td><span class="status-num n4">403</span></td><td><code>INSUFFICIENT_ROLE</code></td><td>Project Members/Assignment — has project access, but the action requires being the project <strong>owner</strong> (or, for assignment, requires acting on themselves).</td></tr>
           <tr><td><span class="status-num n4">403</span></td><td><code>INVITATION_EMAIL_MISMATCH</code></td><td>Invitation accept only — the token is valid but wasn't addressed to the accepting account's email.</td></tr>
           <tr><td><span class="status-num n4">409</span></td><td><code>EMAIL_ALREADY_REGISTERED</code></td><td>Register only — an account with this email exists.</td></tr>
-          <tr><td><span class="status-num n4">409</span></td><td><code>INVITATION_ALREADY_PENDING</code></td><td>Invitation create only — a pending invite already exists for this team + email.</td></tr>
-          <tr><td><span class="status-num n4">409</span></td><td><code>PROJECT_NOT_ON_TEAM</code></td><td>Error assignment only — the project has no team attached, so there's no one to assign to.</td></tr>
-          <tr><td><span class="status-num n4">409</span></td><td><code>LAST_TEAM_LEAD</code></td><td>Team member update/remove only — cannot leave a team with zero <code>LEAD</code>s.</td></tr>
-          <tr><td><span class="status-num n4">413</span></td><td><code>PAYLOAD_TOO_LARGE</code></td><td>Body exceeds the endpoint's limit — 32&nbsp;KiB events, 4&nbsp;KiB auth/projects/devices/teams/invitations/assignment.</td></tr>
+          <tr><td><span class="status-num n4">409</span></td><td><code>INVITATION_ALREADY_PENDING</code></td><td>Invitation create only — a pending invite already exists for this project + email.</td></tr>
+          <tr><td><span class="status-num n4">409</span></td><td><code>CANNOT_REMOVE_OWNER</code></td><td>Member removal only — the project owner can't be removed as a member; there's always exactly one owner.</td></tr>
+          <tr><td><span class="status-num n4">413</span></td><td><code>PAYLOAD_TOO_LARGE</code></td><td>Body exceeds the endpoint's limit — 32&nbsp;KiB events, 4&nbsp;KiB auth/projects/devices/members/invitations/assignment.</td></tr>
           <tr><td><span class="status-num n4">429</span></td><td><code>RATE_LIMITED</code></td><td>Login or event ingestion, too fast — a <code>Retry-After</code> header (seconds) is always attached.</td></tr>
           <tr><td><span class="status-num n5">500</span></td><td><code>INTERNAL_ERROR</code></td><td>Unexpected server failure — message is always generic; real cause is server-side only.</td></tr>
         </tbody>
@@ -766,6 +757,7 @@
                 <tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>1–200 chars</td></tr>
                 <tr><td><code>email</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>Valid email, max 320 chars, lowercased/trimmed server-side</td></tr>
                 <tr><td><code>password</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>8–200 chars</td></tr>
+                <tr><td><code>invitationToken</code></td><td>string</td><td><span class="req-no">no</span></td><td>See <a href="#invitations-accept">register-with-token</a> below</td></tr>
               </tbody>
             </table>
           </section>
@@ -781,12 +773,17 @@
     "email": "ada@example.com",
     "role": "USER",
     "createdAt": "2026-08-26T10:30:00.000Z"
-  }
+  },
+  "invitation": { "status": "accepted", "projectId": "proj_..." }
 }</code></pre>
             </div>
           </section>
         </div>
         <p class="note"><code>role</code> is <code>"USER"</code> unless this email is on the server's <code>SUPERADMIN_EMAILS</code> allowlist — see <a href="#admin-users">Admin</a>. Checked here and re-checked on every login; promotion-only, never auto-demoted.</p>
+        <div class="callout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+          <div><strong>Register with an invite token — one step, not two.</strong> Pass <code>invitationToken</code> and the new account is auto-joined to that invitation's project in the same request, no separate authenticated <a href="#invitations-accept">accept</a> call needed. The <code>invitation</code> key only appears in the response when a token was sent, and it <strong>never blocks account creation</strong> — a bad, expired, or mismatched token still creates the account; only <code>invitation.status</code> reflects what happened (<code>"accepted"</code>, <code>"not_found"</code>, <code>"expired"</code>, or <code>"email_mismatch"</code>). A brand-new invitee can preview what they're joining first with <a href="#invitations-preview"><code>GET /invitations/preview</code></a> — no account required.</div>
+        </div>
         <div class="endpoint-foot">
           <h4 class="block-label">Errors</h4>
           <div class="error-chips">
@@ -936,7 +933,7 @@ TOKEN=$(echo "$LOGIN" | python3 -c 'import json,sys; print(json.load(sys.stdin)[
     <section class="cat" id="cat-projects">
       <div class="cat-head">
         <h2>Projects</h2>
-        <p class="cat-desc">A project represents one monitored app, with exactly one <strong>owner</strong> and, optionally, one attached <strong>team</strong> (see <a href="#teams-list">Teams</a>). Every endpoint below is scoped to projects the caller owns — a project id belonging to someone else returns <code>404 PROJECT_NOT_FOUND</code>, never <code>403</code>. Attaching a team only grants its members read access to error data and assignment (see <a href="#errors-assign">error assignment</a>) — it never transfers rename/delete/key-rotation rights away from the owner.</p>
+        <p class="cat-desc">A project represents one monitored app, with exactly one <strong>owner</strong> and, optionally, directly-attached <strong>members</strong> (see <a href="#members-list">Project Members</a>). Every endpoint below is scoped to projects the caller owns — a project id belonging to someone else returns <code>404 PROJECT_NOT_FOUND</code>, never <code>403</code>. Being a member only grants read access to error data, self-assignment, and error status (see <a href="#errors-assign">error assignment</a>) — it never transfers rename/delete/key-rotation rights away from the owner.</p>
       </div>
 
       <article class="endpoint" id="projects-list">
@@ -945,7 +942,7 @@ TOKEN=$(echo "$LOGIN" | python3 -c 'import json,sys; print(json.load(sys.stdin)[
           <code class="path">/api/v1/projects</code>
           <span class="auth-badge auth-session">Session token</span>
         </div>
-        <p class="endpoint-desc">Lists every project owned by the caller. Unpaginated — a developer's project count is expected to be small.</p>
+        <p class="endpoint-desc">Lists every project the caller can access — ones they own, plus ones they've been invited into and joined as a member. Unpaginated — a developer's accessible-project count is expected to be small.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
@@ -954,12 +951,13 @@ TOKEN=$(echo "$LOGIN" | python3 -c 'import json,sys; print(json.load(sys.stdin)[
               <pre class="code"><code class="json-raw">{
   "success": true,
   "projects": [
-    { "id": "proj_...", "name": "My Application", "apiKeyLastFour": "a1b2", "createdAt": "...", "updatedAt": "..." }
+    { "id": "proj_...", "name": "My Application", "apiKeyLastFour": "a1b2", "createdAt": "...", "updatedAt": "...", "isOwner": true }
   ]
 }</code></pre>
             </div>
           </section>
         </div>
+        <p class="note"><code>isOwner</code> distinguishes a project this user created from one they were invited into.</p>
         <div class="endpoint-foot">
           <h4 class="block-label">Errors</h4>
           <div class="error-chips">
@@ -1148,85 +1146,6 @@ PROJECT_API_KEY=$(echo "$CREATE" | python3 -c 'import json,sys; print(json.load(
         </details>
       </article>
 
-      <article class="endpoint" id="projects-team-attach">
-        <div class="endpoint-head">
-          <span class="method method-put">PUT</span>
-          <code class="path">/api/v1/projects/:projectId/team</code>
-          <span class="auth-badge auth-session">Session token · owner only</span>
-        </div>
-        <p class="endpoint-desc">Attaches the project to a team the owner already belongs to (as any role). Every member of that team immediately gains read access to the project's error data and the ability to assign error groups.</p>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Request body</h4>
-            <table class="fields">
-              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
-              <tbody><tr><td><code>teamId</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
-            </table>
-          </section>
-          <section class="block">
-            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
-            <div class="code-block">
-              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
-            </div>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
-        <details class="curl">
-          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
-          <div class="code-block">
-            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-            <pre class="code"><code>curl -s -X PUT "$BASE_URL/api/v1/projects/$PROJECT_ID/team" \
-  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"teamId":"'"$TEAM_ID"'"}'</code></pre>
-          </div>
-        </details>
-      </article>
-
-      <article class="endpoint" id="projects-team-detach">
-        <div class="endpoint-head">
-          <span class="method method-delete">DELETE</span>
-          <code class="path">/api/v1/projects/:projectId/team</code>
-          <span class="auth-badge auth-session">Session token · owner only</span>
-        </div>
-        <p class="endpoint-desc">Detaches the project's team, if any — every team member (other than the owner) immediately loses access. Idempotent: detaching an already-teamless project still returns <code>200</code>.</p>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
-            <div class="code-block">
-              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
-            </div>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
-        <details class="curl">
-          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
-          <div class="code-block">
-            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-            <pre class="code"><code>curl -s -X DELETE "$BASE_URL/api/v1/projects/$PROJECT_ID/team" -H "Authorization: Bearer $TOKEN"</code></pre>
-          </div>
-        </details>
-      </article>
     </section>
 
     <!-- ================= API KEYS ================= -->
@@ -1372,7 +1291,7 @@ PROJECT_API_KEY=$(echo "$CREATE" | python3 -c 'import json,sys; print(json.load(
     <section class="cat" id="cat-errors">
       <div class="cat-head">
         <h2>Errors</h2>
-        <p class="cat-desc">Query what event ingestion produced, and assign error groups to a team member. The web dashboard and the mobile app consume these exact same endpoints — there are no mobile-specific duplicates. Every list uses the same pagination shape: <code>"pagination": { "page": 1, "limit": 20, "total": 27 }</code> — <code>limit</code> defaults to 20 (max 100); invalid values are rejected, never silently clamped. Every endpoint here now accepts the project's <strong>owner or any of its team members</strong> — see <a href="#teams-list">Teams</a>.</p>
+        <p class="cat-desc">Query what event ingestion produced, and assign error groups to a project member. The web dashboard and the mobile app consume these exact same endpoints — there are no mobile-specific duplicates. Every list uses the same pagination shape: <code>"pagination": { "page": 1, "limit": 20, "total": 27 }</code> — <code>limit</code> defaults to 20 (max 100); invalid values are rejected, never silently clamped. Every endpoint here accepts the project's <strong>owner or any of its members</strong> — see <a href="#members-list">Project Members</a>.</p>
       </div>
 
       <article class="endpoint" id="errors-list">
@@ -1498,13 +1417,16 @@ PROJECT_API_KEY=$(echo "$CREATE" | python3 -c 'import json,sys; print(json.load(
           <code class="path">/api/v1/projects/:projectId/errors/:errorGroupId</code>
           <span class="auth-badge auth-session">Session token</span>
         </div>
-        <p class="endpoint-desc">Assigns (or unassigns) an error group to a member of the project's team. Only meaningful on a project with a team attached.</p>
+        <p class="endpoint-desc">Assigns/unassigns an error group to a project member, sets its <code>status</code>, or both in one request. At least one of <code>assigneeId</code>/<code>status</code> is required.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Request body</h4>
             <table class="fields">
               <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
-              <tbody><tr><td><code>assigneeId</code></td><td>string | null</td><td><code>null</code> unassigns</td></tr></tbody>
+              <tbody>
+                <tr><td><code>assigneeId</code></td><td>string | null</td><td>A member's user id, the project owner's id, or <code>null</code> to unassign</td></tr>
+                <tr><td><code>status</code></td><td>string</td><td><code>"PENDING"</code> · <code>"IN_PROGRESS"</code> · <code>"DONE"</code></td></tr>
+              </tbody>
             </table>
           </section>
           <section class="block">
@@ -1513,27 +1435,26 @@ PROJECT_API_KEY=$(echo "$CREATE" | python3 -c 'import json,sys; print(json.load(
               <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
               <pre class="code"><code class="json-raw">{
   "success": true,
-  "group": { "id": "grp_...", "message": "...", "assigneeId": "usr_..." }
+  "group": { "id": "grp_...", "message": "...", "assigneeId": "usr_...", "status": "IN_PROGRESS" }
 }</code></pre>
             </div>
           </section>
         </div>
         <div class="callout">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-          <div><strong>Permissions.</strong> A team <code>LEAD</code> can assign to (or unassign) any member. A <code>MEMBER</code> can only assign the group to <strong>themselves</strong>, or unassign themselves — never touch another member's assignment.</div>
+          <div><strong>Permissions differ per field.</strong> <code>assigneeId</code> — the project <strong>owner</strong> can assign to (or unassign) anyone with project access; a regular member can only assign the group to <strong>themselves</strong>, or unassign themselves — never touch another member's assignment. <code>status</code> — <strong>any</strong> owner or member can set it, regardless of who's assigned.</div>
         </div>
-        <p class="note">On a successful non-null assignment, this best-effort notifies the assignee the same way event ingestion does (see <a href="#notifications">Notifications</a>) — a notification failure never affects this response. No notification fires on unassign.</p>
+        <p class="note">On a successful non-null <code>assigneeId</code> change, this best-effort notifies the assignee the same way event ingestion does (see <a href="#notifications">Notifications</a>) — a notification failure never affects this response. No notification fires on unassign or a <code>status</code>-only update.</p>
         <div class="endpoint-foot">
           <h4 class="block-label">Errors</h4>
           <div class="error-chips">
             <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>400 NOT_A_TEAM_MEMBER</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 NOT_A_PROJECT_MEMBER</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>404 ERROR_GROUP_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>409 PROJECT_NOT_ON_TEAM</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
             <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
           </div>
@@ -1546,6 +1467,11 @@ PROJECT_API_KEY=$(echo "$CREATE" | python3 -c 'import json,sys; print(json.load(
 curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"assigneeId":"'"$USER_ID"'"}'
+
+# set status
+curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"status":"IN_PROGRESS"}'
 
 # unassign
 curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
@@ -1812,25 +1738,20 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
       </div>
     </section>
 
-    <!-- ================= TEAMS ================= -->
-    <section class="cat" id="cat-teams">
+    <!-- ================= PROJECT MEMBERS ================= -->
+    <section class="cat" id="cat-project-members">
       <div class="cat-head">
-        <h2>Teams</h2>
-        <p class="cat-desc">An org-style group of users that can jointly access one or more projects. A project's <strong>owner</strong> decides whether to attach it to a team they belong to (see <a href="#projects-team-attach"><code>PUT /projects/:id/team</code></a>) — once attached, every team member gets read access to that project's error data and can assign its error groups. Every endpoint below returns <code>404 TEAM_NOT_FOUND</code> — not <code>403</code> — for a team id that doesn't exist or the caller isn't a member of, the same IDOR-safe pattern as Projects.</p>
+        <h2>Project Members</h2>
+        <p class="cat-desc">Each project has members directly — there is no separate team to create first. A project's <strong>owner</strong> is the only privileged actor: they invite/remove members, rename/delete the project, rotate its key. A member gets read access to the project's error data and can assign/reassign themselves and set error status (see <a href="#errors-assign">error assignment</a>) — only the owner can assign an error group to someone other than themselves.</p>
       </div>
 
-      <div class="callout">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        <div>Every team has exactly one role besides plain membership: <code>LEAD</code>. A team can have several LEADs; whoever creates a team is automatically its first one.</div>
-      </div>
-
-      <article class="endpoint" id="teams-list">
+      <article class="endpoint" id="members-list">
         <div class="endpoint-head">
           <span class="method method-get">GET</span>
-          <code class="path">/api/v1/teams</code>
+          <code class="path">/api/v1/projects/:projectId/members</code>
           <span class="auth-badge auth-session">Session token</span>
         </div>
-        <p class="endpoint-desc">Lists every team the caller belongs to, any role.</p>
+        <p class="endpoint-desc">Lists the project's members — the owner (<code>isOwner: true</code>) followed by every <code>ProjectMember</code>. Callable by the owner or any member.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
@@ -1838,7 +1759,7 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
               <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
               <pre class="code"><code class="json-raw">{
   "success": true,
-  "teams": [{ "id": "team_...", "name": "Rocket", "createdById": "usr_...", "createdAt": "...", "updatedAt": "..." }]
+  "members": [{ "userId": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com", "createdAt": "...", "isOwner": true }]
 }</code></pre>
             </div>
           </section>
@@ -1848,6 +1769,7 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
           <div class="error-chips">
             <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
             <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
           </div>
         </div>
@@ -1855,122 +1777,18 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
           <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
           <div class="code-block">
             <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-            <pre class="code"><code>curl -s "$BASE_URL/api/v1/teams" -H "Authorization: Bearer $TOKEN"</code></pre>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/projects/$PROJECT_ID/members" -H "Authorization: Bearer $TOKEN"</code></pre>
           </div>
         </details>
       </article>
 
-      <article class="endpoint" id="teams-create">
-        <div class="endpoint-head">
-          <span class="method method-post">POST</span>
-          <code class="path">/api/v1/teams</code>
-          <span class="auth-badge auth-session">Session token</span>
-        </div>
-        <p class="endpoint-desc">Creates a team — the caller becomes its first <code>LEAD</code>.</p>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Request body</h4>
-            <table class="fields">
-              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
-              <tbody><tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
-            </table>
-          </section>
-          <section class="block">
-            <h4 class="block-label">Response <span class="status-chip status-2xx">201</span></h4>
-            <div class="code-block">
-              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-              <pre class="code"><code class="json-raw">{
-  "success": true,
-  "team": { "id": "team_...", "name": "Rocket", "createdById": "usr_...", "createdAt": "...", "updatedAt": "..." }
-}</code></pre>
-            </div>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
-        <details class="curl">
-          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
-          <div class="code-block">
-            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-            <pre class="code"><code>TEAM=$(curl -s -X POST "$BASE_URL/api/v1/teams" \
-  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"name":"Rocket"}')
-TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)["team"]["id"])')</code></pre>
-          </div>
-        </details>
-      </article>
-
-      <article class="endpoint" id="teams-get">
-        <div class="endpoint-head">
-          <span class="method method-get">GET</span>
-          <code class="path">/api/v1/teams/:teamId</code>
-          <span class="auth-badge auth-session">Session token</span>
-        </div>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
-            <div class="code-block">
-              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-              <pre class="code"><code class="json-raw">{ "success": true, "team": { "id": "...", "name": "...", "createdById": "...", "createdAt": "...", "updatedAt": "..." } }</code></pre>
-            </div>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="endpoint" id="teams-patch">
-        <div class="endpoint-head">
-          <span class="method method-patch">PATCH</span>
-          <code class="path">/api/v1/teams/:teamId</code>
-          <span class="auth-badge auth-session">Session token · LEAD only</span>
-        </div>
-        <p class="endpoint-desc">Renames the team.</p>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Request body</h4>
-            <table class="fields">
-              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
-              <tbody><tr><td><code>name</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
-            </table>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="endpoint" id="teams-delete">
+      <article class="endpoint" id="members-delete">
         <div class="endpoint-head">
           <span class="method method-delete">DELETE</span>
-          <code class="path">/api/v1/teams/:teamId</code>
-          <span class="auth-badge auth-session">Session token · LEAD only</span>
+          <code class="path">/api/v1/projects/:projectId/members/:userId</code>
+          <span class="auth-badge auth-session">Session token</span>
         </div>
-        <p class="endpoint-desc">Deletes the team. Attached projects are <strong>detached</strong>, not deleted — their error data is untouched, they just revert to owner-only access.</p>
+        <p class="endpoint-desc">Removes a member. The owner can remove anyone; any member can remove <strong>themselves</strong> ("leave project"). The owner cannot be removed or leave their own project this way — there's always exactly one owner.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
@@ -1986,36 +1804,9 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
             <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="endpoint" id="teams-members-list">
-        <div class="endpoint-head">
-          <span class="method method-get">GET</span>
-          <code class="path">/api/v1/teams/:teamId/members</code>
-          <span class="auth-badge auth-session">Session token</span>
-        </div>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
-            <div class="code-block">
-              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-              <pre class="code"><code class="json-raw">{
-  "success": true,
-  "members": [{ "userId": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com", "role": "LEAD", "createdAt": "..." }]
-}</code></pre>
-            </div>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 NOT_A_PROJECT_MEMBER</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>409 CANNOT_REMOVE_OWNER</span>
             <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
           </div>
         </div>
@@ -2023,69 +1814,9 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
           <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
           <div class="code-block">
             <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-            <pre class="code"><code>curl -s "$BASE_URL/api/v1/teams/$TEAM_ID/members" -H "Authorization: Bearer $TOKEN"</code></pre>
+            <pre class="code"><code>curl -s -X DELETE "$BASE_URL/api/v1/projects/$PROJECT_ID/members/$USER_ID" -H "Authorization: Bearer $TOKEN"</code></pre>
           </div>
         </details>
-      </article>
-
-      <article class="endpoint" id="teams-members-patch">
-        <div class="endpoint-head">
-          <span class="method method-patch">PATCH</span>
-          <code class="path">/api/v1/teams/:teamId/members/:userId</code>
-          <span class="auth-badge auth-session">Session token · LEAD only</span>
-        </div>
-        <p class="endpoint-desc">Changes a member's role. Blocked if it would leave the team with zero <code>LEAD</code>s.</p>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Request body</h4>
-            <table class="fields">
-              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
-              <tbody><tr><td><code>role</code></td><td><code>"LEAD"</code> | <code>"MEMBER"</code></td><td><span class="req-yes">yes</span></td></tr></tbody>
-            </table>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>409 LAST_TEAM_LEAD</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="endpoint" id="teams-members-delete">
-        <div class="endpoint-head">
-          <span class="method method-delete">DELETE</span>
-          <code class="path">/api/v1/teams/:teamId/members/:userId</code>
-          <span class="auth-badge auth-session">Session token</span>
-        </div>
-        <p class="endpoint-desc">Removes a member. A <code>LEAD</code> can remove anyone; any member can remove <strong>themselves</strong> ("leave team") regardless of role. Blocked if it would leave the team with zero <code>LEAD</code>s.</p>
-        <div class="endpoint-grid">
-          <section class="block">
-            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
-            <div class="code-block">
-              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-              <pre class="code"><code class="json-raw">{ "success": true }</code></pre>
-            </div>
-          </section>
-        </div>
-        <div class="endpoint-foot">
-          <h4 class="block-label">Errors</h4>
-          <div class="error-chips">
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>409 LAST_TEAM_LEAD</span>
-            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
-          </div>
-        </div>
       </article>
     </section>
 
@@ -2093,16 +1824,16 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
     <section class="cat" id="cat-invitations">
       <div class="cat-head">
         <h2>Invitations</h2>
-        <p class="cat-desc">How someone joins a team. There is no email-delivery mechanism in this backend, so an invitation's raw token is returned directly in the creation response — this backend also best-effort attempts to email it, but today that's a logging-only placeholder (no provider configured yet). <strong>The token in the API response is the reliable way to deliver an invite</strong>, not a fallback.</p>
+        <p class="cat-desc">How someone joins a project. Invitations are per-project — there is no guaranteed email-delivery mechanism in this backend, so an invitation's raw token is always returned directly in the creation response; this backend also attempts to actually email it via SMTP when a Gmail account (or similar) with an App Password is configured, falling back to a logging-only placeholder otherwise. Either way, <strong>the token in the API response is the reliable way to deliver an invite</strong>, not a fallback. A brand-new person can join in one step by <a href="#auth-register">registering with the invite token</a> — no separate accept call needed.</p>
       </div>
 
       <article class="endpoint" id="invitations-list">
         <div class="endpoint-head">
           <span class="method method-get">GET</span>
-          <code class="path">/api/v1/teams/:teamId/invitations</code>
-          <span class="auth-badge auth-session">Session token · LEAD only</span>
+          <code class="path">/api/v1/projects/:projectId/invitations</code>
+          <span class="auth-badge auth-session">Session token · owner only</span>
         </div>
-        <p class="endpoint-desc">Lists the team's pending invitations.</p>
+        <p class="endpoint-desc">Lists the project's pending invitations.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
@@ -2110,7 +1841,7 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
               <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
               <pre class="code"><code class="json-raw">{
   "success": true,
-  "invitations": [{ "id": "...", "teamId": "...", "invitedEmail": "bob@example.com", "invitedRole": "MEMBER", "status": "PENDING", "expiresAt": "...", "createdAt": "..." }]
+  "invitations": [{ "id": "...", "projectId": "...", "invitedEmail": "bob@example.com", "status": "PENDING", "expiresAt": "...", "createdAt": "..." }]
 }</code></pre>
             </div>
           </section>
@@ -2120,8 +1851,7 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
           <div class="error-chips">
             <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
             <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
           </div>
         </div>
@@ -2130,18 +1860,17 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
       <article class="endpoint" id="invitations-create">
         <div class="endpoint-head">
           <span class="method method-post">POST</span>
-          <code class="path">/api/v1/teams/:teamId/invitations</code>
-          <span class="auth-badge auth-session">Session token · LEAD only</span>
+          <code class="path">/api/v1/projects/:projectId/invitations</code>
+          <span class="auth-badge auth-session">Session token · owner only</span>
         </div>
-        <p class="endpoint-desc">Creates an invitation. Rejects a duplicate pending invitation for the same team + email.</p>
+        <p class="endpoint-desc">Creates an invitation. Rejects a duplicate pending invitation for the same project + email.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Request body</h4>
             <table class="fields">
-              <thead><tr><th>Field</th><th>Type</th><th>Req.</th><th>Notes</th></tr></thead>
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
               <tbody>
-                <tr><td><code>email</code></td><td>string</td><td><span class="req-yes">yes</span></td><td>&nbsp;</td></tr>
-                <tr><td><code>role</code></td><td><code>"LEAD"</code> | <code>"MEMBER"</code></td><td><span class="req-no">no</span></td><td>Defaults to <code>MEMBER</code></td></tr>
+                <tr><td><code>email</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr>
               </tbody>
             </table>
           </section>
@@ -2151,7 +1880,7 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
               <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
               <pre class="code"><code class="json-raw">{
   "success": true,
-  "invitation": { "id": "...", "invitedEmail": "bob@example.com", "invitedRole": "MEMBER", "status": "PENDING", "expiresAt": "..." },
+  "invitation": { "id": "...", "invitedEmail": "bob@example.com", "status": "PENDING", "expiresAt": "..." },
   "token": "927802a82e0c06b52bb4cb8ed862dd5..."
 }</code></pre>
             </div>
@@ -2167,8 +1896,7 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
             <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>409 INVITATION_ALREADY_PENDING</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>413 PAYLOAD_TOO_LARGE</span>
             <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
@@ -2178,7 +1906,7 @@ TEAM_ID=$(echo "$TEAM" | python3 -c 'import json,sys; print(json.load(sys.stdin)
           <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
           <div class="code-block">
             <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-            <pre class="code"><code>INVITE=$(curl -s -X POST "$BASE_URL/api/v1/teams/$TEAM_ID/invitations" \
+            <pre class="code"><code>INVITE=$(curl -s -X POST "$BASE_URL/api/v1/projects/$PROJECT_ID/invitations" \
   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"email":"bob@example.com"}')
 INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys.stdin)["token"])')</code></pre>
@@ -2189,8 +1917,8 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
       <article class="endpoint" id="invitations-revoke">
         <div class="endpoint-head">
           <span class="method method-delete">DELETE</span>
-          <code class="path">/api/v1/teams/:teamId/invitations/:invitationId</code>
-          <span class="auth-badge auth-session">Session token · LEAD only</span>
+          <code class="path">/api/v1/projects/:projectId/invitations/:invitationId</code>
+          <span class="auth-badge auth-session">Session token · owner only</span>
         </div>
         <div class="endpoint-grid">
           <section class="block">
@@ -2206,12 +1934,53 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
           <div class="error-chips">
             <span class="error-chip"><i class="dot dot-4xx"></i>401 UNAUTHORIZED</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>401 INVALID_SESSION</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>403 INSUFFICIENT_ROLE</span>
-            <span class="error-chip"><i class="dot dot-4xx"></i>404 TEAM_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 PROJECT_NOT_FOUND</span>
             <span class="error-chip"><i class="dot dot-4xx"></i>404 INVITATION_NOT_FOUND</span>
             <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
           </div>
         </div>
+      </article>
+
+      <article class="endpoint" id="invitations-preview">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <code class="path">/api/v1/invitations/preview</code>
+          <span class="auth-badge auth-public">Public</span>
+        </div>
+        <p class="endpoint-desc">Lets a brand-new person (no account yet) preview what they've been invited to before registering.</p>
+        <div class="endpoint-grid">
+          <section class="block">
+            <h4 class="block-label">Query params</h4>
+            <table class="fields">
+              <thead><tr><th>Field</th><th>Type</th><th>Req.</th></tr></thead>
+              <tbody><tr><td><code>token</code></td><td>string</td><td><span class="req-yes">yes</span></td></tr></tbody>
+            </table>
+          </section>
+          <section class="block">
+            <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
+            <div class="code-block">
+              <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+              <pre class="code"><code class="json-raw">{ "success": true, "projectName": "My Application", "invitedEmail": "bob@example.com" }</code></pre>
+            </div>
+          </section>
+        </div>
+        <p class="note">Never reveals anything beyond the project name and invited email — both already implied by possessing the raw token.</p>
+        <div class="endpoint-foot">
+          <h4 class="block-label">Errors</h4>
+          <div class="error-chips">
+            <span class="error-chip"><i class="dot dot-4xx"></i>400 VALIDATION_ERROR</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 INVITATION_NOT_FOUND</span>
+            <span class="error-chip"><i class="dot dot-4xx"></i>404 INVITATION_EXPIRED</span>
+            <span class="error-chip"><i class="dot dot-5xx"></i>500 INTERNAL_ERROR</span>
+          </div>
+        </div>
+        <details class="curl">
+          <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
+          <div class="code-block">
+            <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/invitations/preview?token=$INVITE_TOKEN"</code></pre>
+          </div>
+        </details>
       </article>
 
       <article class="endpoint" id="invitations-mine">
@@ -2220,7 +1989,7 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
           <code class="path">/api/v1/invitations/mine</code>
           <span class="auth-badge auth-session">Session token</span>
         </div>
-        <p class="endpoint-desc">Pending invitations addressed to the caller's own account email — how someone discovers they've been invited, without already knowing a team id.</p>
+        <p class="endpoint-desc">Pending invitations addressed to the caller's own account email — how an existing user discovers they've been invited, without already knowing a project id.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
@@ -2253,7 +2022,7 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
           <code class="path">/api/v1/invitations/accept</code>
           <span class="auth-badge auth-session">Session token</span>
         </div>
-        <p class="endpoint-desc">Accepts an invitation and joins its team, at the role the invitation specified. Idempotent if the caller is already a member.</p>
+        <p class="endpoint-desc">Accepts an invitation and joins its project. For an authenticated caller who <strong>already has an account</strong> — a brand-new person should <a href="#auth-register">register with the token</a> instead. Idempotent if the caller is already a member.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Request body</h4>
@@ -2266,7 +2035,7 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
             <h4 class="block-label">Response <span class="status-chip status-2xx">200</span></h4>
             <div class="code-block">
               <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-              <pre class="code"><code class="json-raw">{ "success": true, "teamId": "team_..." }</code></pre>
+              <pre class="code"><code class="json-raw">{ "success": true, "projectId": "proj_..." }</code></pre>
             </div>
           </section>
         </div>
@@ -2349,13 +2118,13 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
         </details>
       </article>
 
-      <article class="endpoint" id="admin-teams">
+      <article class="endpoint" id="admin-projects">
         <div class="endpoint-head">
           <span class="method method-get">GET</span>
-          <code class="path">/api/v1/admin/teams</code>
+          <code class="path">/api/v1/admin/projects</code>
           <span class="auth-badge auth-session">Session token · SUPERADMIN only</span>
         </div>
-        <p class="endpoint-desc">Every team in the system ("your clients"), with member/project counts — distinct from <code>GET /teams</code> above, which only lists the caller's own teams.</p>
+        <p class="endpoint-desc">Every project in the system ("your clients"), with owner info and member count — distinct from <a href="#projects-list"><code>GET /projects</code></a> above, which only lists projects the caller can access.</p>
         <div class="endpoint-grid">
           <section class="block">
             <h4 class="block-label">Query params</h4>
@@ -2370,7 +2139,7 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
               <div class="code-block-bar"><span>JSON</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
               <pre class="code"><code class="json-raw">{
   "success": true,
-  "data": [{ "id": "team_...", "name": "Rocket", "createdAt": "...", "createdBy": { "id": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com" }, "memberCount": 3, "projectCount": 2 }],
+  "data": [{ "id": "proj_...", "name": "My Application", "createdAt": "...", "owner": { "id": "usr_...", "name": "Ada Lovelace", "email": "ada@example.com" }, "memberCount": 3 }],
   "pagination": { "page": 1, "limit": 20, "total": 6 }
 }</code></pre>
             </div>
@@ -2390,7 +2159,7 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
           <summary><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>curl example</summary>
           <div class="code-block">
             <div class="code-block-bar"><span>Shell</span><button class="copy-btn" type="button" data-copy-target>Copy</button></div>
-            <pre class="code"><code>curl -s "$BASE_URL/api/v1/admin/teams" -H "Authorization: Bearer $SUPERADMIN_TOKEN"</code></pre>
+            <pre class="code"><code>curl -s "$BASE_URL/api/v1/admin/projects" -H "Authorization: Bearer $SUPERADMIN_TOKEN"</code></pre>
           </div>
         </details>
       </article>
@@ -2446,18 +2215,18 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
         <li><strong>Search is a plain substring match</strong> on <code>message</code> — no fuzzy matching, no full-text index.</li>
         <li><strong>No <code>GET /api/v1/devices</code></strong> — only register/delete exist.</li>
         <li><strong><code>os</code> and <code>metadata</code></strong> exist as columns but are always <code>null</code> — reserved, not derived.</li>
-        <li><strong>No cascading unassign</strong> when a member is removed from a team while still assigned to one of its error groups — the (now stale) assignment is left in place, not automatically cleared.</li>
+        <li><strong>No cascading unassign</strong> when a member is removed from a project while still assigned to one of its error groups — the (now stale) assignment is left in place, not automatically cleared.</li>
         <li><strong>Invitation uniqueness is application-level, not a DB constraint</strong> — Postgres can only express "unique while pending" via a partial index, not expressible in the schema DSL used here.</li>
-        <li><strong>Invitation emails are logged, not delivered</strong> — same situation as push notifications: no email provider is wired up yet. The token in the creation response is the reliable delivery path today.</li>
+        <li><strong>Invitation emails require SMTP configuration to actually deliver</strong> — set a Gmail account (or similar) with an App Password to send real email; otherwise it just logs what would be sent. The token in the creation response is always the reliable delivery path either way.</li>
         <li><strong>Superadmin role is snapshotted into the session token at login</strong> — a change to <code>SUPERADMIN_EMAILS</code> only takes effect on that user's next login, not live mid-session.</li>
         <li><strong>No endpoint to grant/revoke <code>SUPERADMIN</code></strong> — bootstrapped purely via the environment variable, promotion-only.</li>
-        <li><strong>A team grants project access, not co-ownership</strong> — members (including LEADs) can read error data and manage assignment; only the direct owner can rename/delete a project, rotate its key, or attach/detach a team.</li>
+        <li><strong>A project's members get access, not co-ownership</strong> — members can read error data and manage assignment/status; only the direct owner can rename/delete a project, rotate its key, or invite/remove members.</li>
       </ul>
     </section>
 
     <footer class="pagefoot">
       <span>Canary API · v1</span>
-      <span>Backend built Phases 7–14 · SDK built Phases 0–6</span>
+      <span>Backend built Phases 7–15 · SDK built Phases 0–6</span>
     </footer>
 
   </main>
