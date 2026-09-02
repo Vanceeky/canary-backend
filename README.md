@@ -72,11 +72,13 @@ See `.env.example` for the full annotated list.
 - **`CORS_ALLOWED_ORIGINS` has no wildcard support** — Vercel preview
   deployment URLs (`*.vercel.app`) need to be added individually if you want
   a preview build of a frontend to call this API cross-origin.
-- **Invitation/notification emails are logged, not delivered** — no email
-  or push provider is wired up yet (`src/lib/email.ts`,
-  `src/lib/notification.ts`). The raw invite token is still returned
-  directly in the invitation-creation API response, so inviting teammates
-  works today without a provider.
+- **Invitation email and push notifications fall back to logging when
+  unconfigured** — `src/lib/email.ts` sends real SMTP mail only when all
+  `SMTP_*` vars are set; `src/lib/notification.ts` sends real FCM push only
+  when `FIREBASE_SERVICE_ACCOUNT_JSON_BASE64` is set (not yet live-verified
+  against a real device). The raw invite token is still returned directly in
+  the invitation-creation API response either way, so inviting teammates
+  works today regardless of SMTP configuration.
 
 ## Full API reference
 

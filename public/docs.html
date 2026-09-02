@@ -1690,9 +1690,9 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
         </div>
       </div>
 
-      <div class="callout warn" style="margin-top:1.4rem;">
+      <div class="callout" style="margin-top:1.4rem;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
-        <div><strong>Logged, not delivered.</strong> No Expo/FCM credentials exist in this project — <code>ConsoleNotificationService</code> logs exactly what would be sent. Swapping in a real provider changes one factory function, nothing else.</div>
+        <div><strong>Real delivery via Firebase Cloud Messaging.</strong> <code>FcmNotificationService</code> sends when <code>FIREBASE_SERVICE_ACCOUNT_JSON_BASE64</code> is configured; otherwise <code>ConsoleNotificationService</code> logs exactly what would be sent. Swapping providers changes one factory function, nothing else.</div>
       </div>
 
       <div style="margin-top:1.6rem;">
@@ -2203,7 +2203,7 @@ INVITE_TOKEN=$(echo "$INVITE" | python3 -c 'import json,sys; print(json.load(sys
         <p class="cat-desc">Documented gaps, not silent ones — nothing below is a bug you'll discover the hard way.</p>
       </div>
       <ul class="limits">
-        <li><strong>Notifications are logged, not delivered</strong> — no real push provider is wired up yet.</li>
+        <li><strong>FCM push delivery is implemented but not yet live-verified</strong> against a real Firebase project/device — falls back to logging when unconfigured.</li>
         <li><strong>CORS is a single global allowlist</strong>, not per-project yet.</li>
         <li><strong>Rate limiting is in-memory and per-process</strong> — not correct for a horizontally-scaled deployment.</li>
         <li><strong>No pagination</strong> on <code>GET /api/v1/projects</code> — fine while project counts stay small.</li>
