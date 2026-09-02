@@ -1696,7 +1696,7 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
       </div>
 
       <div style="margin-top:1.6rem;">
-        <h4 class="block-label">Trigger rules — at most one per event</h4>
+        <h4 class="block-label">Trigger rules — every event notifies, exactly one type each</h4>
         <div class="trigger-row">
           <span class="trigger-rank">1st</span>
           <span class="trigger-name">NEW_ERROR</span>
@@ -1712,8 +1712,13 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
           <span class="trigger-name">REACTIVATED_ERROR</span>
           <span class="trigger-cond">The group's previous occurrence was over 24h ago.</span>
         </div>
+        <div class="trigger-row">
+          <span class="trigger-rank">4th</span>
+          <span class="trigger-name">ERROR_OCCURRED</span>
+          <span class="trigger-cond">Fallback — none of the above; an ordinary repeat occurrence.</span>
+        </div>
       </div>
-      <p class="note" style="border:none;padding-top:0.8rem;">If more than one applies, only the highest-priority trigger fires. An ordinary repeat of an already-active group triggers nothing.</p>
+      <p class="note" style="border:none;padding-top:0.8rem;">If more than one applies, only the highest-priority trigger fires. An ordinary repeat of an already-active group still notifies, via the ERROR_OCCURRED fallback.</p>
 
       <div style="margin-top:1.2rem;">
         <h4 class="block-label">Payload — deep-links a mobile client to the error</h4>
@@ -1733,7 +1738,7 @@ curl -s -X PATCH "$BASE_URL/api/v1/projects/$PROJECT_ID/errors/$GROUP_ID" \
         <div class="trigger-row">
           <span class="trigger-rank">manual</span>
           <span class="trigger-name">ASSIGNED_ERROR</span>
-          <span class="trigger-cond">Fired by <a href="#errors-assign"><code>PATCH /errors/:id</code></a>, never by event ingestion — doesn't compete with the three triggers above and can fire alongside one of them on the same group.</span>
+          <span class="trigger-cond">Fired by <a href="#errors-assign"><code>PATCH /errors/:id</code></a>, never by event ingestion — doesn't compete with the four triggers above and can fire alongside one of them on the same group.</span>
         </div>
       </div>
     </section>
