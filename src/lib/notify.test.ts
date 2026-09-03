@@ -22,16 +22,22 @@ const newGroupPersisted: PersistedEvent = {
 
 const ordinaryPersisted: PersistedEvent = { ...newGroupPersisted, isNewGroup: false };
 
-async function freshNotify(notifyUserMock: ReturnType<typeof vi.fn>) {
+async function freshNotify(notifyUserMock: ReturnType<typeof vi.fn>, memberUserIds: string[] = []) {
   vi.resetModules();
   vi.doMock("./notification", () => ({ getNotificationService: () => ({ notifyUser: notifyUserMock }) }));
+  vi.doMock("./db", () => ({
+    prisma: { projectMember: { findMany: vi.fn().mockResolvedValue(memberUserIds.map((userId) => ({ userId }))) } },
+  }));
   return import("./notify");
 }
 
 describe("notifyIfNeeded", () => {
-  afterEach(() => vi.doUnmock("./notification"));
+  afterEach(() => {
+    vi.doUnmock("./notification");
+    vi.doUnmock("./db");
+  });
 
-  it("does nothing when the project has no owner", async () => {
+  it("does nothing when the project has no owner and no members", async () => {
     const notifyUserMock = vi.fn();
     const { notifyIfNeeded } = await freshNotify(notifyUserMock);
 
@@ -61,6 +67,27 @@ describe("notifyIfNeeded", () => {
     const [userId, payload] = notifyUserMock.mock.calls[0];
     expect(userId).toBe("user_1");
     expect(payload).toMatchObject({ type: "NEW_ERROR", projectId: "proj_1", errorGroupId: "grp_1" });
+  });
+
+  it("notifies every project member in addition to the owner", async () => {
+    const notifyUserMock = vi.fn().mockResolvedValue(undefined);
+    const { notifyIfNeeded } = await freshNotify(notifyUserMock, ["member_1", "member_2"]);
+
+    await notifyIfNeeded({ id: "proj_1", name: "P", ownerId: "user_1" }, event, newGroupPersisted);
+
+    expect(notifyUserMock).toHaveBeenCalledTimes(3);
+    const notifiedUserIds = notifyUserMock.mock.calls.map(([userId]) => userId);
+    expect(notifiedUserIds).toEqual(["user_1", "member_1", "member_2"]);
+  });
+
+  it("notifies members even when the project has no owner", async () => {
+    const notifyUserMock = vi.fn().mockResolvedValue(undefined);
+    const { notifyIfNeeded } = await freshNotify(notifyUserMock, ["member_1"]);
+
+    await notifyIfNeeded({ id: "proj_1", name: "P", ownerId: null }, event, newGroupPersisted);
+
+    expect(notifyUserMock).toHaveBeenCalledTimes(1);
+    expect(notifyUserMock.mock.calls[0][0]).toBe("member_1");
   });
 
   it("propagates a notification-service failure to the caller (route decides how to handle it)", async () => {
