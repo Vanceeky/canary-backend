@@ -4,7 +4,7 @@ const user = { id: "user_1", name: "Ada", email: "ada@example.com" };
 
 async function freshRoute(opts: {
   authFails?: boolean;
-  findOwnedProject?: ReturnType<typeof vi.fn>;
+  resolveProjectAccess?: ReturnType<typeof vi.fn>;
   updateProjectName?: ReturnType<typeof vi.fn>;
   deleteOwnedProject?: ReturnType<typeof vi.fn>;
 } = {}) {
@@ -17,8 +17,13 @@ async function freshRoute(opts: {
       ? vi.fn().mockRejectedValue(ERRORS.UNAUTHORIZED())
       : vi.fn().mockResolvedValue(user),
   }));
+  // GET uses resolveProjectAccess (owner OR member, see lib/access.ts) so
+  // project members can view a project they don't own; PATCH/DELETE still
+  // go through lib/project's owner-only helpers.
+  vi.doMock("@/lib/access", () => ({
+    resolveProjectAccess: opts.resolveProjectAccess ?? vi.fn().mockResolvedValue(null),
+  }));
   vi.doMock("@/lib/project", () => ({
-    findOwnedProject: opts.findOwnedProject ?? vi.fn().mockResolvedValue(null),
     updateProjectName: opts.updateProjectName ?? vi.fn().mockResolvedValue(null),
     deleteOwnedProject: opts.deleteOwnedProject ?? vi.fn().mockResolvedValue(false),
   }));
@@ -44,19 +49,20 @@ describe("GET /api/v1/projects/:projectId", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.doUnmock("@/lib/authGuard");
+    vi.doUnmock("@/lib/access");
     vi.doUnmock("@/lib/project");
   });
 
-  it("returns 404 PROJECT_NOT_FOUND when the project isn't owned by the caller", async () => {
-    const { GET } = await freshRoute({ findOwnedProject: vi.fn().mockResolvedValue(null) });
+  it("returns 404 PROJECT_NOT_FOUND when the caller has no access (not owner or member)", async () => {
+    const { GET } = await freshRoute({ resolveProjectAccess: vi.fn().mockResolvedValue(null) });
     const response = await GET(makeRequest("GET"), ctx());
     expect(response.status).toBe(404);
     expect((await response.json()) as unknown).toMatchObject({ error: { code: "PROJECT_NOT_FOUND" } });
   });
 
-  it("returns 200 with the project when owned", async () => {
+  it("returns 200 with the project when owned or a member", async () => {
     const project = { id: "proj_1", name: "My App", apiKeyLastFour: "abcd" };
-    const { GET } = await freshRoute({ findOwnedProject: vi.fn().mockResolvedValue(project) });
+    const { GET } = await freshRoute({ resolveProjectAccess: vi.fn().mockResolvedValue(project) });
     const response = await GET(makeRequest("GET"), ctx());
     expect(response.status).toBe(200);
     expect((await response.json()) as unknown).toEqual({ success: true, project });
