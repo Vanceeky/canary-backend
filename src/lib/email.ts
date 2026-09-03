@@ -72,7 +72,7 @@ class SmtpEmailService implements EmailService {
   }
 
   async sendInvitationEmail(to: string, payload: InvitationEmailPayload): Promise<void> {
-    const webAppBaseUrl = process.env.WEB_APP_BASE_URL?.trim();
+    const webAppBaseUrl = process.env.WEB_APP_BASE_URL?.trim() ?? 'https://canary-dashboard-zeta.vercel.app';
     const subject = `${payload.inviterName} invited you to join "${payload.projectName}" on Canary`;
     const acceptUrl = webAppBaseUrl ? `${webAppBaseUrl.replace(/\/$/, "")}/invitations/accept?token=${payload.token}` : undefined;
 
