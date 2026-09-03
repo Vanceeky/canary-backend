@@ -18,6 +18,8 @@ const GROUP_SUMMARY_SELECT = {
   occurrenceCount: true,
   firstSeenAt: true,
   lastSeenAt: true,
+  assigneeId: true,
+  status: true,
 } as const;
 
 const SORT_FIELD_MAP = {
@@ -74,6 +76,8 @@ export async function getErrorGroupDetail(projectId: string, groupId: string, oc
       firstSeenAt: true,
       lastSeenAt: true,
       occurrenceCount: true,
+      assigneeId: true,
+      status: true,
     },
   });
   if (!group) return null;
