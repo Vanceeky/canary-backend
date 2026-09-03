@@ -58,7 +58,7 @@ class SmtpEmailService implements EmailService {
   }
 
   async sendInvitationEmail(to: string, payload: InvitationEmailPayload): Promise<void> {
-    const webAppBaseUrl = process.env.WEB_APP_BASE_URL?.trim();
+    const webAppBaseUrl = process.env.WEB_APP_BASE_URL?.trim() ?? 'https://canary-dashboard-zeta.vercel.app';
     const subject = `${payload.inviterName} invited you to join "${payload.projectName}" on Canary`;
 
     // No frontend is deployed yet to build a real accept link for — never
