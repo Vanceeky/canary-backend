@@ -3,7 +3,8 @@ import { requireSessionUser } from "@/lib/authGuard";
 import { resolveCorsHeaders } from "@/lib/cors";
 import { MAX_PROJECT_PAYLOAD_BYTES } from "@/lib/constants";
 import { ApiError, ERRORS, jsonError } from "@/lib/errors";
-import { deleteOwnedProject, findOwnedProject, updateProjectName } from "@/lib/project";
+import { resolveProjectAccess } from "@/lib/access";
+import { deleteOwnedProject, updateProjectName } from "@/lib/project";
 import { updateProjectSchema } from "@/lib/projectSchema";
 
 interface RouteContext {
@@ -24,7 +25,7 @@ export async function GET(request: Request, { params }: RouteContext): Promise<N
     const user = await requireSessionUser(request);
     const { projectId } = await params;
 
-    const project = await findOwnedProject(user.id, projectId);
+    const project = await resolveProjectAccess(user.id, projectId);
     if (!project) {
       return jsonError(ERRORS.PROJECT_NOT_FOUND(), cors);
     }
